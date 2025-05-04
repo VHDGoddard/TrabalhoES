@@ -2,7 +2,7 @@ package models;
 
 public class Pizza extends Produto {
 
-	private Produto id_produto;
+	private int id_produto;
 	private Integer id;
 	private char tamanho;
 	
@@ -10,17 +10,17 @@ public class Pizza extends Produto {
 		
 	}
 
-	public Pizza(Produto id_produto, Integer id, char tamanho) {
+	public Pizza(int id_produto, Integer id, char tamanho) {
 		this.id_produto = id_produto;
 		this.id = id;
 		this.tamanho = tamanho;
 	}
 
-	public Produto getId_produto() {
+	public int getId_produto() {
 		return id_produto;
 	}
 
-	public void setId_produto(Produto id_produto) {
+	public void setId_produto(int id_produto) {
 		this.id_produto = id_produto;
 	}
 

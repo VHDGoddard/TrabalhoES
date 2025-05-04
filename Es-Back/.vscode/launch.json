@@ -1,0 +1,20 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "type": "java",
+        "name": "Aplicacao",
+        "request": "launch",
+        "mainClass": "App.Aplicacao",
+        "projectName": "Es-Back"
+      },
+      {
+        "type": "java",
+        "name": "Run with Maven",
+        "request": "launch",
+        "mainClass": "com.exemplo.App",
+        "preLaunchTask": "mvn compile",
+        "vmArgs": "-Dexec.mainClass=com.exemplo.App"
+      }
+    ]
+  }
