@@ -245,91 +245,87 @@ public class Aplicacao {
             }
         });
 
-        // Outros endpoints podem ser adicionados aqui (cadastro, pedidos, etc)
 
         // ENDERECO
-       
 
-        post("/endereco", (req, res) -> {
+        post("/endereco/create", (req, res) -> {
             Endereco endereco = gson.fromJson(req.body(), Endereco.class);
             enderecoDAO.create(endereco);
             res.status(201);
             return gson.toJson(endereco);
         });
 
-        get("/endereco/:id", (req, res) -> {
+        get("/endereco/read/:id", (req, res) -> {
             Endereco e = enderecoDAO.read(Integer.parseInt(req.params(":id")));
             return gson.toJson(e);
         });
 
-        get("/endereco", (req, res) -> gson.toJson(enderecoDAO.readAll()));
+        get("/endereco/getAll", (req, res) -> gson.toJson(enderecoDAO.readAll()));
 
-        put("/endereco/:id", (req, res) -> {
+        put("/endereco/update/:id", (req, res) -> {
             Endereco endereco = gson.fromJson(req.body(), Endereco.class);
             endereco.setId(Integer.parseInt(req.params(":id")));
             enderecoDAO.update(endereco);
             return gson.toJson(endereco);
         });
 
-        delete("/endereco/:id", (req, res) -> {
+        delete("/endereco/delete/:id", (req, res) -> {
             enderecoDAO.delete(Integer.parseInt(req.params(":id")));
             return "Deletado";
         });
 
         // PAGAMENTO
-        
 
-        post("/pagamento", (req, res) -> {
+        post("/pagamento/create", (req, res) -> {
             Pagamento pagamento = gson.fromJson(req.body(), Pagamento.class);
             pagamentoDAO.create(pagamento);
             res.status(201);
             return gson.toJson(pagamento);
         });
 
-        get("/pagamento/:id", (req, res) -> {
+        get("/pagamento/read/:id", (req, res) -> {
             Pagamento p = pagamentoDAO.read(Integer.parseInt(req.params(":id")));
             return gson.toJson(p);
         });
 
-        get("/pagamento", (req, res) -> gson.toJson(pagamentoDAO.readAll()));
+        get("/pagamento/getAll", (req, res) -> gson.toJson(pagamentoDAO.readAll()));
 
-        put("/pagamento/:id", (req, res) -> {
+        put("/pagamento/update/:id", (req, res) -> {
             Pagamento pagamento = gson.fromJson(req.body(), Pagamento.class);
             pagamento.setId(Integer.parseInt(req.params(":id")));
             pagamentoDAO.update(pagamento);
             return gson.toJson(pagamento);
         });
 
-        delete("/pagamento/:id", (req, res) -> {
+        delete("/pagamento/delete/:id", (req, res) -> {
             pagamentoDAO.delete(Integer.parseInt(req.params(":id")));
             return "Deletado";
         });
 
         // PEDIDO
         
-
-        post("/pedido", (req, res) -> {
+        post("/pedido/create", (req, res) -> {
             Pedido pedido = gson.fromJson(req.body(), Pedido.class);
             pedidoDAO.create(pedido);
             res.status(201);
             return gson.toJson(pedido);
         });
 
-        get("/pedido/:id", (req, res) -> {
+        get("/pedido/read/:id", (req, res) -> {
             Pedido p = pedidoDAO.read(Integer.parseInt(req.params(":id")));
             return gson.toJson(p);
         });
 
-        get("/pedido", (req, res) -> gson.toJson(pedidoDAO.readAll()));
+        get("/pedido/getAll", (req, res) -> gson.toJson(pedidoDAO.readAll()));
 
-        put("/pedido/:id", (req, res) -> {
+        put("/pedido/update/:id", (req, res) -> {
             Pedido pedido = gson.fromJson(req.body(), Pedido.class);
             pedido.setId(Integer.parseInt(req.params(":id")));
             pedidoDAO.update(pedido);
             return gson.toJson(pedido);
         });
 
-        delete("/pedido/:id", (req, res) -> {
+        delete("/pedido/delete/:id", (req, res) -> {
             pedidoDAO.delete(Integer.parseInt(req.params(":id")));
             return "Deletado";
         });
@@ -337,28 +333,28 @@ public class Aplicacao {
         // PEDIDO_ITEM
         
 
-        post("/pedido_item", (req, res) -> {
+        post("/pedido_item/create", (req, res) -> {
             Pedido_item item = gson.fromJson(req.body(), Pedido_item.class);
             pedidoItemDAO.create(item);
             res.status(201);
             return gson.toJson(item);
         });
 
-        get("/pedido_item/:id", (req, res) -> {
+        get("/pedido_item/read/:id", (req, res) -> {
             Pedido_item item = pedidoItemDAO.read(Integer.parseInt(req.params(":id")));
             return gson.toJson(item);
         });
 
-        get("/pedido_item", (req, res) -> gson.toJson(pedidoItemDAO.readAll()));
+        get("/pedido_item/getAll", (req, res) -> gson.toJson(pedidoItemDAO.readAll()));
 
-        put("/pedido_item/:id", (req, res) -> {
+        put("/pedido_item/update/:id", (req, res) -> {
             Pedido_item item = gson.fromJson(req.body(), Pedido_item.class);
             item.setId(Integer.parseInt(req.params(":id")));
             pedidoItemDAO.update(item);
             return gson.toJson(item);
         });
 
-        delete("/pedido_item/:id", (req, res) -> {
+        delete("/pedido_item/delete/:id", (req, res) -> {
             pedidoItemDAO.delete(Integer.parseInt(req.params(":id")));
             return "Deletado";
         });
