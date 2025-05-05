@@ -14,8 +14,10 @@ public class Aplicacao {
         port(4567); // Define a porta da API (http://localhost:4567)
 
         Gson gson = new Gson(); // Para conversão de objetos para JSON e vice-versa
-        UsersDAO dao = new UsersDAO();
-
+        UsersDAO userDAO = new UsersDAO();
+        ProdutoDAO produtoDAO = new ProdutoDAO();
+        PizzaDAO pizzaDAO = new PizzaDAO();
+        BebidaDAO bebidaDAO = new BebidaDAO();
         // Endpoint de teste
         get("/", (req, res) -> "API está rodando!");
 
@@ -44,7 +46,7 @@ public class Aplicacao {
             System.out.println("Senha: " + cadastroRequest.getPassword());
             System.out.println("CPF: " + cadastroRequest.getCpf());
             System.out.println("Telefone: " + cadastroRequest.getPhone_number());
-            if (dao.create(cadastroRequest)) {
+            if (userDAO.create(cadastroRequest)) {
                 return gson.toJson(new Resposta("Cadastro realizado com sucesso!", true));
             } else {
                 res.status(401);
@@ -52,9 +54,9 @@ public class Aplicacao {
             }
         });
         // GET /users/:id - Buscar usuário
-get("/users/read", (req, res) -> {
+get("/users/read/:id", (req, res) -> {
     int id = Integer.parseInt(req.params("id"));
-    User user = dao.read(id);
+    User user = userDAO.read(id);
     if (user != null) {
         return gson.toJson(user);
     } else {
@@ -64,7 +66,7 @@ get("/users/read", (req, res) -> {
 });
 
 get("/users/readAll", (req, res) -> {
-    List<User> users = dao.readAll();
+    List<User> users = userDAO.readAll();
     if (!users.isEmpty()) {
         return gson.toJson(users);
     } else {
@@ -74,10 +76,10 @@ get("/users/readAll", (req, res) -> {
 });
 
 // PUT /users/:id - Atualizar usuário
-put("/users/update", (req, res) -> {
+put("/users/update/:id", (req, res) -> {
     User user = gson.fromJson(req.body(), User.class);
     user.setId(Integer.parseInt(req.params("id")));
-    if (dao.update(user)) {
+    if (userDAO.update(user)) {
         return gson.toJson(new Resposta("Usuário atualizado!", true));
     } else {
         res.status(500);
@@ -86,18 +88,23 @@ put("/users/update", (req, res) -> {
 });
 
 // DELETE /users/:id - Remover usuário
-delete("/users/:id", (req, res) -> {
+delete("/users/delete/:id", (req, res) -> {
     int id = Integer.parseInt(req.params("id"));
-    if (dao.delete(id)) {
+    if (userDAO.delete(id)) {
         return gson.toJson(new Resposta("Usuário removido!", true));
     } else {
         res.status(500);
         return gson.toJson(new Resposta("Erro ao remover usuário.", false));
     }
-});// POST /produto - Cadastrar produto
-post("/produto", (req, res) -> {
+
+    
+});
+get("/users/getAll", (req, res) -> gson.toJson(userDAO.readAll()));
+
+// POST /produto - Cadastrar produto
+post("/produto/create", (req, res) -> {
     Produto produto = gson.fromJson(req.body(), Produto.class);
-    if (produto.salvar()) {
+    if (produtoDAO.create(produto)) {
         res.status(201);
         return gson.toJson(new Resposta("Produto cadastrado!", true));
     } else {
@@ -107,9 +114,9 @@ post("/produto", (req, res) -> {
 });
 
 // GET /produto/:id - Buscar produto
-get("/produto/:id", (req, res) -> {
+get("/produto/read", (req, res) -> {
     int id = Integer.parseInt(req.params("id"));
-    Produto produto = Produto.buscarPorId(id);
+    Produto produto = produtoDAO.read(id);
     if (produto != null) {
         return gson.toJson(produto);
     } else {
@@ -119,10 +126,10 @@ get("/produto/:id", (req, res) -> {
 });
 
 // PUT /produto/:id - Atualizar produto
-put("/produto/:id", (req, res) -> {
+put("/produto/update/:id", (req, res) -> {
     Produto produto = gson.fromJson(req.body(), Produto.class);
     produto.setId(Integer.parseInt(req.params("id")));
-    if (produto.atualizar()) {
+    if (produtoDAO.update(produto)) {
         return gson.toJson(new Resposta("Produto atualizado!", true));
     } else {
         res.status(500);
@@ -131,9 +138,9 @@ put("/produto/:id", (req, res) -> {
 });
 
 // DELETE /produto/:id - Remover produto
-delete("/produto/:id", (req, res) -> {
+delete("/produto/delete/:id", (req, res) -> {
     int id = Integer.parseInt(req.params("id"));
-    if (Produto.remover(id)) {
+    if (produtoDAO.delete(id)) {
         return gson.toJson(new Resposta("Produto removido!", true));
     } else {
         res.status(500);
@@ -141,9 +148,9 @@ delete("/produto/:id", (req, res) -> {
     }
 });
 // POST /pizza - Cadastrar pizza
-post("/pizza", (req, res) -> {
+post("/pizza/create", (req, res) -> {
     Pizza pizza = gson.fromJson(req.body(), Pizza.class);
-    if (pizza.salvar()) {
+    if (pizzaDAO.create(pizza)) {
         res.status(201);
         return gson.toJson(new Resposta("Pizza cadastrada!", true));
     } else {
@@ -153,9 +160,9 @@ post("/pizza", (req, res) -> {
 });
 
 // GET /pizza/:id - Buscar pizza
-get("/pizza/:id", (req, res) -> {
+get("/pizza/read/:id", (req, res) -> {
     int id = Integer.parseInt(req.params("id"));
-    Pizza pizza = Pizza.buscarPorId(id);
+    Pizza pizza = pizzaDAO.read(id);
     if (pizza != null) {
         return gson.toJson(pizza);
     } else {
@@ -165,10 +172,10 @@ get("/pizza/:id", (req, res) -> {
 });
 
 // PUT /pizza/:id - Atualizar pizza
-put("/pizza/:id", (req, res) -> {
+put("/pizza/update/:id", (req, res) -> {
     Pizza pizza = gson.fromJson(req.body(), Pizza.class);
     pizza.setId(Integer.parseInt(req.params("id")));
-    if (pizza.atualizar()) {
+    if (pizzaDAO.update(pizza)) {
         return gson.toJson(new Resposta("Pizza atualizada!", true));
     } else {
         res.status(500);
@@ -177,9 +184,9 @@ put("/pizza/:id", (req, res) -> {
 });
 
 // DELETE /pizza/:id - Remover pizza
-delete("/pizza/:id", (req, res) -> {
+delete("/pizza/remove/:id", (req, res) -> {
     int id = Integer.parseInt(req.params("id"));
-    if (Pizza.remover(id)) {
+    if (pizzaDAO.delete(id)) {
         return gson.toJson(new Resposta("Pizza removida!", true));
     } else {
         res.status(500);
@@ -187,9 +194,9 @@ delete("/pizza/:id", (req, res) -> {
     }
 });
 // POST /bebida - Cadastrar bebida
-post("/bebida", (req, res) -> {
+post("/bebida/create", (req, res) -> {
     Bebida bebida = gson.fromJson(req.body(), Bebida.class);
-    if (bebida.salvar()) {
+    if (bebidaDAO.create(bebida)) {
         res.status(201);
         return gson.toJson(new Resposta("Bebida cadastrada!", true));
     } else {
@@ -199,9 +206,9 @@ post("/bebida", (req, res) -> {
 });
 
 // GET /bebida/:id - Buscar bebida
-get("/bebida/:id", (req, res) -> {
+get("/bebida/read/:id", (req, res) -> {
     int id = Integer.parseInt(req.params("id"));
-    Bebida bebida = Bebida.buscarPorId(id);
+    Bebida bebida = bebidaDAO.read(id);
     if (bebida != null) {
         return gson.toJson(bebida);
     } else {
@@ -211,10 +218,10 @@ get("/bebida/:id", (req, res) -> {
 });
 
 // PUT /bebida/:id - Atualizar bebida
-put("/bebida/:id", (req, res) -> {
+put("/bebida/update/:id", (req, res) -> {
     Bebida bebida = gson.fromJson(req.body(), Bebida.class);
     bebida.setId(Integer.parseInt(req.params("id")));
-    if (bebida.atualizar()) {
+    if (bebidaDAO.update(bebida)) {
         return gson.toJson(new Resposta("Bebida atualizada!", true));
     } else {
         res.status(500);
@@ -223,9 +230,9 @@ put("/bebida/:id", (req, res) -> {
 });
 
 // DELETE /bebida/:id - Remover bebida
-delete("/bebida/:id", (req, res) -> {
+delete("/bebida/delete/:id", (req, res) -> {
     int id = Integer.parseInt(req.params("id"));
-    if (Bebida.remover(id)) {
+    if (bebidaDAO.delete(id)) {
         return gson.toJson(new Resposta("Bebida removida!", true));
     } else {
         res.status(500);

@@ -9,19 +9,17 @@ import java.util.List;
 
 import com.DBsLogic.DatabaseConnection;
 
-import models.User;
+import models.Bebida;
 
-public class UsersDAO {
-    public boolean create(User user) {
-        String sql = "INSERT INTO users (email, password, phone_number, cpf) VALUES (?, ?, ?, ?)";
+public class BebidaDAO {
+    public boolean create(Bebida bebida) {
+        String sql = "INSERT INTO Bebida (id_produto, tamanho) VALUES (?, ?)";
 
         try (Connection conn = DatabaseConnection.connect();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, user.getEmail());
-            stmt.setString(2, user.getPassword());
-            stmt.setString(3, user.getPhone_number());
-            stmt.setString(4, user.getCpf());
+            stmt.setInt(1, bebida.getId_produto());
+            stmt.setString(2,String.valueOf(bebida.getTamanho()));
             stmt.executeUpdate();
             return true;
         } catch (SQLException e) {
@@ -31,19 +29,17 @@ public class UsersDAO {
         return false;
     }
 
-    public User read(int id) {
-        String sql = "SELECT * FROM users WHERE id = ?";
+    public Bebida read(int id) {
+        String sql = "SELECT * FROM Bebida WHERE id = ?";
         try (Connection conn = DatabaseConnection.connect();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
 
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                return new User(rs.getInt("id"),
-                        rs.getString("email"),
-                        rs.getString("password"),
-                        rs.getString("phone_number"),
-                        rs.getString("cpf"));
+                return new Bebida(rs.getInt("id"),
+                        rs.getInt("id_produto"),
+                        rs.getString("nome").charAt(0));
             }
 
         } catch (SQLException e) {
@@ -52,38 +48,33 @@ public class UsersDAO {
         return null;
     }
 
-    public List<User> readAll() {
-        List<User> users = new ArrayList<>();
-        String sql = "SELECT * FROM users";
+    public List<Bebida> readAll() {
+        List<Bebida> Bebidas = new ArrayList<>();
+        String sql = "SELECT * FROM Bebida";
         try (Connection conn = DatabaseConnection.connect();
                 PreparedStatement stmt = conn.prepareStatement(sql);
                 ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
-                User user = new User(rs.getInt("id"),
-                        rs.getString("email"),
-                        rs.getString("password"),
-                        rs.getString("phone_number"),
-                        rs.getString("cpf"));
-                users.add(user);
+                Bebida produto = new Bebida(rs.getInt("id"),
+                rs.getInt("id_produto"),
+                rs.getString("nome").charAt(0));
+                Bebidas.add(produto);
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return users;
+        return Bebidas;
     }
 
-    public boolean update(User user) {
-        String sql = "UPDATE users SET email = ?, password = ?, phone_number = ?, cpf = ? WHERE id = ?";
+    public boolean update(Bebida bebida) {
+        String sql = "UPDATE Bebida SET id_produto = ?, tamanho = ? WHERE id = ?";
         try (Connection conn = DatabaseConnection.connect();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, user.getEmail());
-            stmt.setString(2, user.getPassword());
-            stmt.setString(3, user.getPhone_number());
-            stmt.setString(4, user.getCpf());
-            stmt.setInt(5, user.getId());
-            stmt.executeUpdate();
-            return true;
+                    stmt.setInt(1, bebida.getId_produto());
+                    stmt.setString(2,String.valueOf(bebida.getTamanho()));
+                    stmt.executeUpdate();
+                    return true;
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -91,7 +82,7 @@ public class UsersDAO {
     }
 
     public boolean delete(int id) {
-        String sql = "DELETE FROM users WHERE id = ?";
+        String sql = "DELETE FROM Bebida WHERE id = ?";
         try (Connection conn = DatabaseConnection.connect();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
