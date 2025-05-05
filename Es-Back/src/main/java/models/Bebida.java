@@ -2,26 +2,26 @@ package models;
 
 public class Bebida extends Produto{
 
-	private Produto produto_id;
+	private int id_produto;
 	private Integer id;
-	private String tamanho;
+	private char tamanho;
 	
 	public Bebida() {
 		
 	}
 
-	public Bebida(Produto produto_id, Integer id, String tamanho) {
-		this.produto_id = produto_id;
+	public Bebida(int id_produto, Integer id, char tamanho) {
+		this.id_produto = id_produto;
 		this.id = id;
 		this.tamanho = tamanho;
 	}
 
-	public Produto getProduto_id() {
-		return produto_id;
+	public int getId_produto() {
+		return id_produto;
 	}
 
-	public void setProduto_id(Produto produto_id) {
-		this.produto_id = produto_id;
+	public void setId_produto(int id_produto) {
+		this.id_produto = id_produto;
 	}
 
 	public Integer getId() {
@@ -32,15 +32,15 @@ public class Bebida extends Produto{
 		this.id = id;
 	}
 
-	public String getTamanho() {
+	public char getTamanho() {
 		return tamanho;
 	}
 
-	public void setTamanho(String tamanho) {
+	public void setTamanho(char tamanho) {
 		this.tamanho = tamanho;
 	}
 	
-	public void setSize (String newSize) {
+	public void setSize (char newSize) {
 		tamanho = newSize;
 	}
 	
