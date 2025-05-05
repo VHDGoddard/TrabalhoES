@@ -9,7 +9,7 @@ import models.Endereco;
 
 public class EnderecoDAO {
 
-    public void create(Endereco endereco) {
+    public boolean create(Endereco endereco) {
         String sql = "INSERT INTO Endereco (rua, bairro, numero, complemento) VALUES (?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.connect();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -18,9 +18,11 @@ public class EnderecoDAO {
             stmt.setInt(3, endereco.getNumero());
             stmt.setString(4, endereco.getComplemento());
             stmt.executeUpdate();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     public Endereco read(int id) {
@@ -66,7 +68,7 @@ public class EnderecoDAO {
         return enderecos;
     }
 
-    public void update(Endereco endereco) {
+    public boolean update(Endereco endereco) {
         String sql = "UPDATE Endereco SET rua = ?, bairro = ?, numero = ?, complemento = ? WHERE id = ?";
         try (Connection conn = DatabaseConnection.connect();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -76,19 +78,25 @@ public class EnderecoDAO {
             stmt.setString(4, endereco.getComplemento());
             stmt.setInt(5, endereco.getId());
             stmt.executeUpdate();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        return false;
     }
 
-    public void delete(int id) {
+    public boolean delete(int id) {
         String sql = "DELETE FROM Endereco WHERE id = ?";
         try (Connection conn = DatabaseConnection.connect();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
             stmt.executeUpdate();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        return false;
     }
 }
