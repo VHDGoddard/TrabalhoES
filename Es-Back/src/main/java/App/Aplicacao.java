@@ -2,8 +2,11 @@ package App;
 
 import static spark.Spark.*;
 
+import java.util.List;
+
 import com.google.gson.Gson;
 import models.*;
+import dao.*;
 
 public class Aplicacao {
     public static void main(String[] args) {
@@ -11,6 +14,7 @@ public class Aplicacao {
         port(4567); // Define a porta da API (http://localhost:4567)
 
         Gson gson = new Gson(); // Para conversão de objetos para JSON e vice-versa
+        UsersDAO dao = new UsersDAO();
 
         // Endpoint de teste
         get("/", (req, res) -> "API está rodando!");
@@ -33,14 +37,14 @@ public class Aplicacao {
             }
         });
 
-        post("/users/cadastro", (req, res) -> {
+        post("/users/create", (req, res) -> {
             res.type("application/json");
             User cadastroRequest = gson.fromJson(req.body(), User.class);
             System.out.println("Email: " + cadastroRequest.getEmail());
             System.out.println("Senha: " + cadastroRequest.getPassword());
             System.out.println("CPF: " + cadastroRequest.getCpf());
             System.out.println("Telefone: " + cadastroRequest.getPhone_number());
-            if (cadastroRequest.cadastro()) {
+            if (dao.create(cadastroRequest)) {
                 return gson.toJson(new Resposta("Cadastro realizado com sucesso!", true));
             } else {
                 res.status(401);
@@ -48,9 +52,9 @@ public class Aplicacao {
             }
         });
         // GET /users/:id - Buscar usuário
-get("/users/:id", (req, res) -> {
+get("/users/read", (req, res) -> {
     int id = Integer.parseInt(req.params("id"));
-    User user = User.buscarPorId(id);
+    User user = dao.read(id);
     if (user != null) {
         return gson.toJson(user);
     } else {
@@ -59,11 +63,21 @@ get("/users/:id", (req, res) -> {
     }
 });
 
+get("/users/readAll", (req, res) -> {
+    List<User> users = dao.readAll();
+    if (!users.isEmpty()) {
+        return gson.toJson(users);
+    } else {
+        res.status(404);
+        return gson.toJson(new Resposta("Nenhum usuário encontrado.", false));
+    }
+});
+
 // PUT /users/:id - Atualizar usuário
-put("/users/:id", (req, res) -> {
+put("/users/update", (req, res) -> {
     User user = gson.fromJson(req.body(), User.class);
     user.setId(Integer.parseInt(req.params("id")));
-    if (user.atualizar()) {
+    if (dao.update(user)) {
         return gson.toJson(new Resposta("Usuário atualizado!", true));
     } else {
         res.status(500);
@@ -74,7 +88,7 @@ put("/users/:id", (req, res) -> {
 // DELETE /users/:id - Remover usuário
 delete("/users/:id", (req, res) -> {
     int id = Integer.parseInt(req.params("id"));
-    if (User.remover(id)) {
+    if (dao.delete(id)) {
         return gson.toJson(new Resposta("Usuário removido!", true));
     } else {
         res.status(500);
