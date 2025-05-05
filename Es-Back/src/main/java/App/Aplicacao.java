@@ -2,6 +2,8 @@ package App;
 
 import static spark.Spark.*;
 
+import java.util.List;
+
 import com.google.gson.Gson;
 import models.*;
 import dao.*;
@@ -12,7 +14,7 @@ public class Aplicacao {
         port(4567); // Define a porta da API (http://localhost:4567)
 
         Gson gson = new Gson(); // Para conversão de objetos para JSON e vice-versa
-        usersDAO userDAO = new usersDAO();
+        UsersDAO userDAO = new UsersDAO();
         ProdutoDAO produtoDAO = new ProdutoDAO();
         PizzaDAO pizzaDAO = new PizzaDAO();
         BebidaDAO bebidaDAO = new BebidaDAO();
@@ -60,6 +62,16 @@ get("/users/read/:id", (req, res) -> {
     } else {
         res.status(404);
         return gson.toJson(new Resposta("Usuário não encontrado.", false));
+    }
+});
+
+get("/users/readAll", (req, res) -> {
+    List<User> users = userDAO.readAll();
+    if (!users.isEmpty()) {
+        return gson.toJson(users);
+    } else {
+        res.status(404);
+        return gson.toJson(new Resposta("Nenhum usuário encontrado.", false));
     }
 });
 

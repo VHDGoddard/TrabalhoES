@@ -11,7 +11,7 @@ import com.DBsLogic.DatabaseConnection;
 
 import models.User;
 
-public class usersDAO {
+public class UsersDAO {
     public boolean create(User user) {
         String sql = "INSERT INTO users (email, password, phone_number, cpf) VALUES (?, ?, ?, ?)";
 
