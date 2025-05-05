@@ -14,10 +14,15 @@ public class Aplicacao {
         port(4567); // Define a porta da API (http://localhost:4567)
 
         Gson gson = new Gson(); // Para conversão de objetos para JSON e vice-versa
+        
         UsersDAO userDAO = new UsersDAO();
         ProdutoDAO produtoDAO = new ProdutoDAO();
         PizzaDAO pizzaDAO = new PizzaDAO();
         BebidaDAO bebidaDAO = new BebidaDAO();
+        PedidoItemDAO pedidoItemDAO = new PedidoItemDAO();
+        PedidoDAO pedidoDAO = new PedidoDAO();
+        PagamentoDAO pagamentoDAO = new PagamentoDAO();
+        EnderecoDAO enderecoDAO = new EnderecoDAO();
         // Endpoint de teste
         get("/", (req, res) -> "API está rodando!");
 
@@ -62,16 +67,6 @@ public class Aplicacao {
             } else {
                 res.status(404);
                 return gson.toJson(new Resposta("Usuário não encontrado.", false));
-            }
-        });
-
-        get("/users/readAll", (req, res) -> {
-            List<User> users = userDAO.readAll();
-            if (!users.isEmpty()) {
-                return gson.toJson(users);
-            } else {
-                res.status(404);
-                return gson.toJson(new Resposta("Nenhum usuário encontrado.", false));
             }
         });
 
@@ -123,7 +118,7 @@ public class Aplicacao {
                 return gson.toJson(new Resposta("Produto não encontrado.", false));
             }
         });
-
+        get("/produto/getAll", (req, res) -> gson.toJson(produtoDAO.readAll()));
         // PUT /produto/:id - Atualizar produto
         put("/produto/update/:id", (req, res) -> {
             Produto produto = gson.fromJson(req.body(), Produto.class);
@@ -169,7 +164,7 @@ public class Aplicacao {
                 return gson.toJson(new Resposta("Pizza não encontrada.", false));
             }
         });
-
+        get("/pizza/getAll", (req, res) -> gson.toJson(pizzaDAO.readAll()));
         // PUT /pizza/:id - Atualizar pizza
         put("/pizza/update/:id", (req, res) -> {
             Pizza pizza = gson.fromJson(req.body(), Pizza.class);
@@ -215,7 +210,7 @@ public class Aplicacao {
                 return gson.toJson(new Resposta("Bebida não encontrada.", false));
             }
         });
-
+        get("/bebida/getAll", (req, res) -> gson.toJson(bebidaDAO.readAll()));
         // PUT /bebida/:id - Atualizar bebida
         put("/bebida/update/:id", (req, res) -> {
             Bebida bebida = gson.fromJson(req.body(), Bebida.class);
@@ -253,7 +248,7 @@ public class Aplicacao {
         // Outros endpoints podem ser adicionados aqui (cadastro, pedidos, etc)
 
         // ENDERECO
-        EnderecoDAO enderecoDAO = new EnderecoDAO();
+       
 
         post("/endereco", (req, res) -> {
             Endereco endereco = gson.fromJson(req.body(), Endereco.class);
@@ -282,7 +277,7 @@ public class Aplicacao {
         });
 
         // PAGAMENTO
-        PagamentoDAO pagamentoDAO = new PagamentoDAO();
+        
 
         post("/pagamento", (req, res) -> {
             Pagamento pagamento = gson.fromJson(req.body(), Pagamento.class);
@@ -311,7 +306,7 @@ public class Aplicacao {
         });
 
         // PEDIDO
-        PedidoDAO pedidoDAO = new PedidoDAO();
+        
 
         post("/pedido", (req, res) -> {
             Pedido pedido = gson.fromJson(req.body(), Pedido.class);
@@ -340,7 +335,7 @@ public class Aplicacao {
         });
 
         // PEDIDO_ITEM
-        PedidoItemDAO pedidoItemDAO = new PedidoItemDAO();
+        
 
         post("/pedido_item", (req, res) -> {
             Pedido_item item = gson.fromJson(req.body(), Pedido_item.class);
