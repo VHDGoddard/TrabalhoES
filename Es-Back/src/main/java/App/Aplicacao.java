@@ -52,7 +52,7 @@ public class Aplicacao {
             }
         });
         // GET /users/:id - Buscar usuário
-get("/users/read", (req, res) -> {
+get("/users/read/:id", (req, res) -> {
     int id = Integer.parseInt(req.params("id"));
     User user = userDAO.read(id);
     if (user != null) {
@@ -64,7 +64,7 @@ get("/users/read", (req, res) -> {
 });
 
 // PUT /users/:id - Atualizar usuário
-put("/users/update", (req, res) -> {
+put("/users/update/:id", (req, res) -> {
     User user = gson.fromJson(req.body(), User.class);
     user.setId(Integer.parseInt(req.params("id")));
     if (userDAO.update(user)) {
@@ -76,7 +76,7 @@ put("/users/update", (req, res) -> {
 });
 
 // DELETE /users/:id - Remover usuário
-delete("/users/delete", (req, res) -> {
+delete("/users/delete/:id", (req, res) -> {
     int id = Integer.parseInt(req.params("id"));
     if (userDAO.delete(id)) {
         return gson.toJson(new Resposta("Usuário removido!", true));
@@ -84,8 +84,13 @@ delete("/users/delete", (req, res) -> {
         res.status(500);
         return gson.toJson(new Resposta("Erro ao remover usuário.", false));
     }
-});// POST /produto - Cadastrar produto
-post("/produto", (req, res) -> {
+
+    
+});
+get("/users/getAll", (req, res) -> gson.toJson(userDAO.readAll()));
+
+// POST /produto - Cadastrar produto
+post("/produto/create", (req, res) -> {
     Produto produto = gson.fromJson(req.body(), Produto.class);
     if (produtoDAO.create(produto)) {
         res.status(201);
@@ -109,7 +114,7 @@ get("/produto/read", (req, res) -> {
 });
 
 // PUT /produto/:id - Atualizar produto
-put("/produto/update", (req, res) -> {
+put("/produto/update/:id", (req, res) -> {
     Produto produto = gson.fromJson(req.body(), Produto.class);
     produto.setId(Integer.parseInt(req.params("id")));
     if (produtoDAO.update(produto)) {
@@ -121,7 +126,7 @@ put("/produto/update", (req, res) -> {
 });
 
 // DELETE /produto/:id - Remover produto
-delete("/produto/delete", (req, res) -> {
+delete("/produto/delete/:id", (req, res) -> {
     int id = Integer.parseInt(req.params("id"));
     if (produtoDAO.delete(id)) {
         return gson.toJson(new Resposta("Produto removido!", true));
@@ -143,7 +148,7 @@ post("/pizza/create", (req, res) -> {
 });
 
 // GET /pizza/:id - Buscar pizza
-get("/pizza/read", (req, res) -> {
+get("/pizza/read/:id", (req, res) -> {
     int id = Integer.parseInt(req.params("id"));
     Pizza pizza = pizzaDAO.read(id);
     if (pizza != null) {
@@ -155,7 +160,7 @@ get("/pizza/read", (req, res) -> {
 });
 
 // PUT /pizza/:id - Atualizar pizza
-put("/pizza/update", (req, res) -> {
+put("/pizza/update/:id", (req, res) -> {
     Pizza pizza = gson.fromJson(req.body(), Pizza.class);
     pizza.setId(Integer.parseInt(req.params("id")));
     if (pizzaDAO.update(pizza)) {
@@ -167,7 +172,7 @@ put("/pizza/update", (req, res) -> {
 });
 
 // DELETE /pizza/:id - Remover pizza
-delete("/pizza/remove", (req, res) -> {
+delete("/pizza/remove/:id", (req, res) -> {
     int id = Integer.parseInt(req.params("id"));
     if (pizzaDAO.delete(id)) {
         return gson.toJson(new Resposta("Pizza removida!", true));
@@ -189,7 +194,7 @@ post("/bebida/create", (req, res) -> {
 });
 
 // GET /bebida/:id - Buscar bebida
-get("/bebida/read", (req, res) -> {
+get("/bebida/read/:id", (req, res) -> {
     int id = Integer.parseInt(req.params("id"));
     Bebida bebida = bebidaDAO.read(id);
     if (bebida != null) {
@@ -201,7 +206,7 @@ get("/bebida/read", (req, res) -> {
 });
 
 // PUT /bebida/:id - Atualizar bebida
-put("/bebida/update", (req, res) -> {
+put("/bebida/update/:id", (req, res) -> {
     Bebida bebida = gson.fromJson(req.body(), Bebida.class);
     bebida.setId(Integer.parseInt(req.params("id")));
     if (bebidaDAO.update(bebida)) {
@@ -213,7 +218,7 @@ put("/bebida/update", (req, res) -> {
 });
 
 // DELETE /bebida/:id - Remover bebida
-delete("/bebida/delete", (req, res) -> {
+delete("/bebida/delete/:id", (req, res) -> {
     int id = Integer.parseInt(req.params("id"));
     if (bebidaDAO.delete(id)) {
         return gson.toJson(new Resposta("Bebida removida!", true));

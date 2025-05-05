@@ -81,6 +81,7 @@ public class usersDAO {
             stmt.setString(2, user.getPassword());
             stmt.setString(3, user.getPhone_number());
             stmt.setString(4, user.getCpf());
+            stmt.setInt(5, user.getId());
             stmt.executeUpdate();
             return true;
         } catch (SQLException e) {
