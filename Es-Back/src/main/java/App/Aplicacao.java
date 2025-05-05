@@ -52,189 +52,330 @@ public class Aplicacao {
             }
         });
         // GET /users/:id - Buscar usuário
-get("/users/read", (req, res) -> {
-    int id = Integer.parseInt(req.params("id"));
-    User user = dao.read(id);
-    if (user != null) {
-        return gson.toJson(user);
-    } else {
-        res.status(404);
-        return gson.toJson(new Resposta("Usuário não encontrado.", false));
-    }
-});
+        get("/users/read", (req, res) -> {
+            int id = Integer.parseInt(req.params("id"));
+            User user = dao.read(id);
+            if (user != null) {
+                return gson.toJson(user);
+            } else {
+                res.status(404);
+                return gson.toJson(new Resposta("Usuário não encontrado.", false));
+            }
+        });
 
-get("/users/readAll", (req, res) -> {
-    List<User> users = dao.readAll();
-    if (!users.isEmpty()) {
-        return gson.toJson(users);
-    } else {
-        res.status(404);
-        return gson.toJson(new Resposta("Nenhum usuário encontrado.", false));
-    }
-});
+        get("/users/readAll", (req, res) -> {
+            List<User> users = dao.readAll();
+            if (!users.isEmpty()) {
+                return gson.toJson(users);
+            } else {
+                res.status(404);
+                return gson.toJson(new Resposta("Nenhum usuário encontrado.", false));
+            }
+        });
 
-// PUT /users/:id - Atualizar usuário
-put("/users/update", (req, res) -> {
-    User user = gson.fromJson(req.body(), User.class);
-    user.setId(Integer.parseInt(req.params("id")));
-    if (dao.update(user)) {
-        return gson.toJson(new Resposta("Usuário atualizado!", true));
-    } else {
-        res.status(500);
-        return gson.toJson(new Resposta("Erro ao atualizar usuário.", false));
-    }
-});
+        // PUT /users/:id - Atualizar usuário
+        put("/users/update", (req, res) -> {
+            User user = gson.fromJson(req.body(), User.class);
+            user.setId(Integer.parseInt(req.params("id")));
+            if (dao.update(user)) {
+                return gson.toJson(new Resposta("Usuário atualizado!", true));
+            } else {
+                res.status(500);
+                return gson.toJson(new Resposta("Erro ao atualizar usuário.", false));
+            }
+        });
 
-// DELETE /users/:id - Remover usuário
-delete("/users/:id", (req, res) -> {
-    int id = Integer.parseInt(req.params("id"));
-    if (dao.delete(id)) {
-        return gson.toJson(new Resposta("Usuário removido!", true));
-    } else {
-        res.status(500);
-        return gson.toJson(new Resposta("Erro ao remover usuário.", false));
-    }
-});// POST /produto - Cadastrar produto
-post("/produto", (req, res) -> {
-    Produto produto = gson.fromJson(req.body(), Produto.class);
-    if (produto.salvar()) {
-        res.status(201);
-        return gson.toJson(new Resposta("Produto cadastrado!", true));
-    } else {
-        res.status(500);
-        return gson.toJson(new Resposta("Erro ao cadastrar produto.", false));
-    }
-});
+        // DELETE /users/:id - Remover usuário
+        delete("/users/:id", (req, res) -> {
+            int id = Integer.parseInt(req.params("id"));
+            if (dao.delete(id)) {
+                return gson.toJson(new Resposta("Usuário removido!", true));
+            } else {
+                res.status(500);
+                return gson.toJson(new Resposta("Erro ao remover usuário.", false));
+            }
+        });// POST /produto - Cadastrar produto
+        post("/produto", (req, res) -> {
+            Produto produto = gson.fromJson(req.body(), Produto.class);
+            if (produto.salvar()) {
+                res.status(201);
+                return gson.toJson(new Resposta("Produto cadastrado!", true));
+            } else {
+                res.status(500);
+                return gson.toJson(new Resposta("Erro ao cadastrar produto.", false));
+            }
+        });
 
-// GET /produto/:id - Buscar produto
-get("/produto/:id", (req, res) -> {
-    int id = Integer.parseInt(req.params("id"));
-    Produto produto = Produto.buscarPorId(id);
-    if (produto != null) {
-        return gson.toJson(produto);
-    } else {
-        res.status(404);
-        return gson.toJson(new Resposta("Produto não encontrado.", false));
-    }
-});
+        // GET /produto/:id - Buscar produto
+        get("/produto/:id", (req, res) -> {
+            int id = Integer.parseInt(req.params("id"));
+            Produto produto = Produto.buscarPorId(id);
+            if (produto != null) {
+                return gson.toJson(produto);
+            } else {
+                res.status(404);
+                return gson.toJson(new Resposta("Produto não encontrado.", false));
+            }
+        });
 
-// PUT /produto/:id - Atualizar produto
-put("/produto/:id", (req, res) -> {
-    Produto produto = gson.fromJson(req.body(), Produto.class);
-    produto.setId(Integer.parseInt(req.params("id")));
-    if (produto.atualizar()) {
-        return gson.toJson(new Resposta("Produto atualizado!", true));
-    } else {
-        res.status(500);
-        return gson.toJson(new Resposta("Erro ao atualizar produto.", false));
-    }
-});
+        // PUT /produto/:id - Atualizar produto
+        put("/produto/:id", (req, res) -> {
+            Produto produto = gson.fromJson(req.body(), Produto.class);
+            produto.setId(Integer.parseInt(req.params("id")));
+            if (produto.atualizar()) {
+                return gson.toJson(new Resposta("Produto atualizado!", true));
+            } else {
+                res.status(500);
+                return gson.toJson(new Resposta("Erro ao atualizar produto.", false));
+            }
+        });
 
-// DELETE /produto/:id - Remover produto
-delete("/produto/:id", (req, res) -> {
-    int id = Integer.parseInt(req.params("id"));
-    if (Produto.remover(id)) {
-        return gson.toJson(new Resposta("Produto removido!", true));
-    } else {
-        res.status(500);
-        return gson.toJson(new Resposta("Erro ao remover produto.", false));
-    }
-});
-// POST /pizza - Cadastrar pizza
-post("/pizza", (req, res) -> {
-    Pizza pizza = gson.fromJson(req.body(), Pizza.class);
-    if (pizza.salvar()) {
-        res.status(201);
-        return gson.toJson(new Resposta("Pizza cadastrada!", true));
-    } else {
-        res.status(500);
-        return gson.toJson(new Resposta("Erro ao cadastrar pizza.", false));
-    }
-});
+        // DELETE /produto/:id - Remover produto
+        delete("/produto/:id", (req, res) -> {
+            int id = Integer.parseInt(req.params("id"));
+            if (Produto.remover(id)) {
+                return gson.toJson(new Resposta("Produto removido!", true));
+            } else {
+                res.status(500);
+                return gson.toJson(new Resposta("Erro ao remover produto.", false));
+            }
+        });
+        // POST /pizza - Cadastrar pizza
+        post("/pizza", (req, res) -> {
+            Pizza pizza = gson.fromJson(req.body(), Pizza.class);
+            if (pizza.salvar()) {
+                res.status(201);
+                return gson.toJson(new Resposta("Pizza cadastrada!", true));
+            } else {
+                res.status(500);
+                return gson.toJson(new Resposta("Erro ao cadastrar pizza.", false));
+            }
+        });
 
-// GET /pizza/:id - Buscar pizza
-get("/pizza/:id", (req, res) -> {
-    int id = Integer.parseInt(req.params("id"));
-    Pizza pizza = Pizza.buscarPorId(id);
-    if (pizza != null) {
-        return gson.toJson(pizza);
-    } else {
-        res.status(404);
-        return gson.toJson(new Resposta("Pizza não encontrada.", false));
-    }
-});
+        // GET /pizza/:id - Buscar pizza
+        get("/pizza/:id", (req, res) -> {
+            int id = Integer.parseInt(req.params("id"));
+            Pizza pizza = Pizza.buscarPorId(id);
+            if (pizza != null) {
+                return gson.toJson(pizza);
+            } else {
+                res.status(404);
+                return gson.toJson(new Resposta("Pizza não encontrada.", false));
+            }
+        });
 
-// PUT /pizza/:id - Atualizar pizza
-put("/pizza/:id", (req, res) -> {
-    Pizza pizza = gson.fromJson(req.body(), Pizza.class);
-    pizza.setId(Integer.parseInt(req.params("id")));
-    if (pizza.atualizar()) {
-        return gson.toJson(new Resposta("Pizza atualizada!", true));
-    } else {
-        res.status(500);
-        return gson.toJson(new Resposta("Erro ao atualizar pizza.", false));
-    }
-});
+        // PUT /pizza/:id - Atualizar pizza
+        put("/pizza/:id", (req, res) -> {
+            Pizza pizza = gson.fromJson(req.body(), Pizza.class);
+            pizza.setId(Integer.parseInt(req.params("id")));
+            if (pizza.atualizar()) {
+                return gson.toJson(new Resposta("Pizza atualizada!", true));
+            } else {
+                res.status(500);
+                return gson.toJson(new Resposta("Erro ao atualizar pizza.", false));
+            }
+        });
 
-// DELETE /pizza/:id - Remover pizza
-delete("/pizza/:id", (req, res) -> {
-    int id = Integer.parseInt(req.params("id"));
-    if (Pizza.remover(id)) {
-        return gson.toJson(new Resposta("Pizza removida!", true));
-    } else {
-        res.status(500);
-        return gson.toJson(new Resposta("Erro ao remover pizza.", false));
-    }
-});
-// POST /bebida - Cadastrar bebida
-post("/bebida", (req, res) -> {
-    Bebida bebida = gson.fromJson(req.body(), Bebida.class);
-    if (bebida.salvar()) {
-        res.status(201);
-        return gson.toJson(new Resposta("Bebida cadastrada!", true));
-    } else {
-        res.status(500);
-        return gson.toJson(new Resposta("Erro ao cadastrar bebida.", false));
-    }
-});
+        // DELETE /pizza/:id - Remover pizza
+        delete("/pizza/:id", (req, res) -> {
+            int id = Integer.parseInt(req.params("id"));
+            if (Pizza.remover(id)) {
+                return gson.toJson(new Resposta("Pizza removida!", true));
+            } else {
+                res.status(500);
+                return gson.toJson(new Resposta("Erro ao remover pizza.", false));
+            }
+        });
+        // POST /bebida - Cadastrar bebida
+        post("/bebida", (req, res) -> {
+            Bebida bebida = gson.fromJson(req.body(), Bebida.class);
+            if (bebida.salvar()) {
+                res.status(201);
+                return gson.toJson(new Resposta("Bebida cadastrada!", true));
+            } else {
+                res.status(500);
+                return gson.toJson(new Resposta("Erro ao cadastrar bebida.", false));
+            }
+        });
 
-// GET /bebida/:id - Buscar bebida
-get("/bebida/:id", (req, res) -> {
-    int id = Integer.parseInt(req.params("id"));
-    Bebida bebida = Bebida.buscarPorId(id);
-    if (bebida != null) {
-        return gson.toJson(bebida);
-    } else {
-        res.status(404);
-        return gson.toJson(new Resposta("Bebida não encontrada.", false));
-    }
-});
+        // GET /bebida/:id - Buscar bebida
+        get("/bebida/:id", (req, res) -> {
+            int id = Integer.parseInt(req.params("id"));
+            Bebida bebida = Bebida.buscarPorId(id);
+            if (bebida != null) {
+                return gson.toJson(bebida);
+            } else {
+                res.status(404);
+                return gson.toJson(new Resposta("Bebida não encontrada.", false));
+            }
+        });
 
-// PUT /bebida/:id - Atualizar bebida
-put("/bebida/:id", (req, res) -> {
-    Bebida bebida = gson.fromJson(req.body(), Bebida.class);
-    bebida.setId(Integer.parseInt(req.params("id")));
-    if (bebida.atualizar()) {
-        return gson.toJson(new Resposta("Bebida atualizada!", true));
-    } else {
-        res.status(500);
-        return gson.toJson(new Resposta("Erro ao atualizar bebida.", false));
-    }
-});
+        // PUT /bebida/:id - Atualizar bebida
+        put("/bebida/:id", (req, res) -> {
+            Bebida bebida = gson.fromJson(req.body(), Bebida.class);
+            bebida.setId(Integer.parseInt(req.params("id")));
+            if (bebida.atualizar()) {
+                return gson.toJson(new Resposta("Bebida atualizada!", true));
+            } else {
+                res.status(500);
+                return gson.toJson(new Resposta("Erro ao atualizar bebida.", false));
+            }
+        });
 
-// DELETE /bebida/:id - Remover bebida
-delete("/bebida/:id", (req, res) -> {
-    int id = Integer.parseInt(req.params("id"));
-    if (Bebida.remover(id)) {
-        return gson.toJson(new Resposta("Bebida removida!", true));
-    } else {
-        res.status(500);
-        return gson.toJson(new Resposta("Erro ao remover bebida.", false));
-    }
-});
-
+        // DELETE /bebida/:id - Remover bebida
+        delete("/bebida/:id", (req, res) -> {
+            int id = Integer.parseInt(req.params("id"));
+            if (Bebida.remover(id)) {
+                return gson.toJson(new Resposta("Bebida removida!", true));
+            } else {
+                res.status(500);
+                return gson.toJson(new Resposta("Erro ao remover bebida.", false));
+            }
+        });
 
         // Outros endpoints podem ser adicionados aqui (cadastro, pedidos, etc)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        
+        // ENDERECO
+        EnderecoDAO enderecoDAO = new EnderecoDAO();
+
+        post("/endereco", (req, res) -> {
+            Endereco endereco = gson.fromJson(req.body(), Endereco.class);
+            enderecoDAO.create(endereco);
+            res.status(201);
+            return gson.toJson(endereco);
+        });
+
+        get("/endereco/:id", (req, res) -> {
+            Endereco e = enderecoDAO.read(Integer.parseInt(req.params(":id")));
+            return gson.toJson(e);
+        });
+
+        get("/endereco", (req, res) -> gson.toJson(enderecoDAO.readAll()));
+
+        put("/endereco/:id", (req, res) -> {
+            Endereco endereco = gson.fromJson(req.body(), Endereco.class);
+            endereco.setId(Integer.parseInt(req.params(":id")));
+            enderecoDAO.update(endereco);
+            return gson.toJson(endereco);
+        });
+
+        delete("/endereco/:id", (req, res) -> {
+            enderecoDAO.delete(Integer.parseInt(req.params(":id")));
+            return "Deletado";
+        });
+
+        // PAGAMENTO
+        PagamentoDAO pagamentoDAO = new PagamentoDAO();
+
+        post("/pagamento", (req, res) -> {
+            Pagamento pagamento = gson.fromJson(req.body(), Pagamento.class);
+            pagamentoDAO.create(pagamento);
+            res.status(201);
+            return gson.toJson(pagamento);
+        });
+
+        get("/pagamento/:id", (req, res) -> {
+            Pagamento p = pagamentoDAO.read(Integer.parseInt(req.params(":id")));
+            return gson.toJson(p);
+        });
+
+        get("/pagamento", (req, res) -> gson.toJson(pagamentoDAO.readAll()));
+
+        put("/pagamento/:id", (req, res) -> {
+            Pagamento pagamento = gson.fromJson(req.body(), Pagamento.class);
+            pagamento.setId(Integer.parseInt(req.params(":id")));
+            pagamentoDAO.update(pagamento);
+            return gson.toJson(pagamento);
+        });
+
+        delete("/pagamento/:id", (req, res) -> {
+            pagamentoDAO.delete(Integer.parseInt(req.params(":id")));
+            return "Deletado";
+        });
+
+        // PEDIDO
+        PedidoDAO pedidoDAO = new PedidoDAO();
+
+        post("/pedido", (req, res) -> {
+            Pedido pedido = gson.fromJson(req.body(), Pedido.class);
+            pedidoDAO.create(pedido);
+            res.status(201);
+            return gson.toJson(pedido);
+        });
+
+        get("/pedido/:id", (req, res) -> {
+            Pedido p = pedidoDAO.read(Integer.parseInt(req.params(":id")));
+            return gson.toJson(p);
+        });
+
+        get("/pedido", (req, res) -> gson.toJson(pedidoDAO.readAll()));
+
+        put("/pedido/:id", (req, res) -> {
+            Pedido pedido = gson.fromJson(req.body(), Pedido.class);
+            pedido.setId(Integer.parseInt(req.params(":id")));
+            pedidoDAO.update(pedido);
+            return gson.toJson(pedido);
+        });
+
+        delete("/pedido/:id", (req, res) -> {
+            pedidoDAO.delete(Integer.parseInt(req.params(":id")));
+            return "Deletado";
+        });
+
+
+        // PEDIDO_ITEM
+        PedidoItemDAO pedidoItemDAO = new PedidoItemDAO();
+
+        post("/pedido_item", (req, res) -> {
+            Pedido_item item = gson.fromJson(req.body(), Pedido_item.class);
+            pedidoItemDAO.create(item);
+            res.status(201);
+            return gson.toJson(item);
+        });
+
+        get("/pedido_item/:id", (req, res) -> {
+            Pedido_item item = pedidoItemDAO.read(Integer.parseInt(req.params(":id")));
+            return gson.toJson(item);
+        });
+
+        get("/pedido_item", (req, res) -> gson.toJson(pedidoItemDAO.readAll()));
+
+        put("/pedido_item/:id", (req, res) -> {
+            Pedido_item item = gson.fromJson(req.body(), Pedido_item.class);
+            item.setId(Integer.parseInt(req.params(":id")));
+            pedidoItemDAO.update(item);
+            return gson.toJson(item);
+        });
+
+        delete("/pedido_item/:id", (req, res) -> {
+            pedidoItemDAO.delete(Integer.parseInt(req.params(":id")));
+            return "Deletado";
+        });
+
     }
 }
 
