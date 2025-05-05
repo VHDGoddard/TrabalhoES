@@ -113,7 +113,7 @@ public class Aplicacao {
         });
 
         // GET /produto/:id - Buscar produto
-        get("/produto/read", (req, res) -> {
+        get("/produto/read/:id", (req, res) -> {
             int id = Integer.parseInt(req.params("id"));
             Produto produto = produtoDAO.read(id);
             if (produto != null) {
