@@ -258,7 +258,6 @@ public class Aplicacao {
 
 
         
-        
         // ENDERECO
         EnderecoDAO enderecoDAO = new EnderecoDAO();
 
