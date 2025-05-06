@@ -4,13 +4,13 @@ public class Pizza extends Produto {
 
 	private int id_produto;
 	private Integer id;
-	private char tamanho;
+	private Character tamanho;
 	
 	public Pizza() {
 		
 	}
 
-	public Pizza(int id_produto, Integer id, char tamanho) {
+	public Pizza(int id_produto, Integer id, Character tamanho) {
 		this.id_produto = id_produto;
 		this.id = id;
 		this.tamanho = tamanho;
@@ -32,11 +32,11 @@ public class Pizza extends Produto {
 		this.id = id;
 	}
 
-	public char getTamanho() {
+	public Character getTamanho() {
 		return tamanho;
 	}
 
-	public void setTamanho(char tamanho) {
+	public void setTamanho(Character tamanho) {
 		this.tamanho = tamanho;
 	}
 	

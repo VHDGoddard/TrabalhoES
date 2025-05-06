@@ -4,17 +4,21 @@ import static spark.Spark.*;
 
 import java.util.List;
 
+import com.DBsLogic.CreateDatabase;
 import com.google.gson.Gson;
 import models.*;
 import dao.*;
 
 public class Aplicacao {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
+
+        //  CreateDatabase dataBase = new CreateDatabase();
+        //  dataBase.create();
 
         port(4567); // Define a porta da API (http://localhost:4567)
 
         Gson gson = new Gson(); // Para conversão de objetos para JSON e vice-versa
-        
+
         UsersDAO userDAO = new UsersDAO();
         ProdutoDAO produtoDAO = new ProdutoDAO();
         PizzaDAO pizzaDAO = new PizzaDAO();
@@ -118,7 +122,8 @@ public class Aplicacao {
                 return gson.toJson(new Resposta("Produto não encontrado.", false));
             }
         });
-        get("/produto/getAll", (req, res) -> gson.toJson(produtoDAO.readAll()));
+        get("/produto/getAll", (req, res) -> { System.out.println(gson.toJson(produtoDAO.readAll()));
+            return gson.toJson(produtoDAO.readAll());});
         // PUT /produto/:id - Atualizar produto
         put("/produto/update/:id", (req, res) -> {
             Produto produto = gson.fromJson(req.body(), Produto.class);
@@ -158,6 +163,8 @@ public class Aplicacao {
             int id = Integer.parseInt(req.params("id"));
             Pizza pizza = pizzaDAO.read(id);
             if (pizza != null) {
+                System.out.println(pizza.getTamanho());
+                System.out.println(gson.toJson(pizza));
                 return gson.toJson(pizza);
             } else {
                 res.status(404);

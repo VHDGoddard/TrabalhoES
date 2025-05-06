@@ -19,7 +19,7 @@ public class PizzaDAO {
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, pizza.getId_produto());
-            stmt.setString(2,String.valueOf(pizza.getTamanho()));
+            stmt.setString(2, String.valueOf(pizza.getTamanho()));
             stmt.executeUpdate();
             return true;
         } catch (SQLException e) {
@@ -39,7 +39,7 @@ public class PizzaDAO {
             if (rs.next()) {
                 return new Pizza(rs.getInt("id"),
                         rs.getInt("id_produto"),
-                        rs.getString("nome").charAt(0));
+                        rs.getString("tamanho").charAt(0));
             }
 
         } catch (SQLException e) {
@@ -55,9 +55,10 @@ public class PizzaDAO {
                 PreparedStatement stmt = conn.prepareStatement(sql);
                 ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
+                System.out.println(rs.getString("tamanho").charAt(0));
                 Pizza produto = new Pizza(rs.getInt("id"),
                 rs.getInt("id_produto"),
-                rs.getString("nome").charAt(0));
+                rs.getString("tamanho").charAt(0));
                 pizzas.add(produto);
             }
 

@@ -64,7 +64,8 @@ public class ProdutoDAO {
                         rs.getDouble("preco"),
                         rs.getString("nome"),
                         rs.getString("observacao"),
-                        Tipo.valueOf(rs.getString("tipo")));
+                        Tipo.valueOf(rs.getString("tipo").toUpperCase()));
+                System.out.println(produto.getTipo());
                 produtos.add(produto);
             }
 
