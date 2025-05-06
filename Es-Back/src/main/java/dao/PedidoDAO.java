@@ -16,8 +16,8 @@ public class PedidoDAO {
         try (Connection conn = DatabaseConnection.connect();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, pedido.getUser_id());
-            stmt.setInt(2, pedido.getEndereco_id().getId());
-            stmt.setInt(3, pedido.getPagamento_id().getId());
+            stmt.setInt(2, pedido.getEndereco_id());
+            stmt.setInt(3, pedido.getPagamento_id());
             stmt.executeUpdate();
             return true;
         } catch (SQLException e) {
@@ -42,8 +42,8 @@ public class PedidoDAO {
                 return new Pedido(
                         rs.getInt("id"),
                         rs.getInt("user_id"),
-                        endereco,
-                        pagamento);
+                        rs.getInt("endereco_id"),
+                        rs.getInt("pagamento_id"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -68,8 +68,8 @@ public class PedidoDAO {
                 Pedido pedido = new Pedido(
                         rs.getInt("id"),
                         rs.getInt("user_id"),
-                        endereco,
-                        pagamento);
+                        rs.getInt("endereco_id"),
+                        rs.getInt("pagamento_id"));
                 pedidos.add(pedido);
             }
         } catch (SQLException e) {
@@ -83,8 +83,8 @@ public class PedidoDAO {
         try (Connection conn = DatabaseConnection.connect();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, pedido.getUser_id());
-            stmt.setInt(2, pedido.getEndereco_id().getId());
-            stmt.setInt(3, pedido.getPagamento_id().getId());
+            stmt.setInt(2, pedido.getEndereco_id());
+            stmt.setInt(3, pedido.getPagamento_id());
             stmt.setInt(4, pedido.getId());
             stmt.executeUpdate();
             return true;

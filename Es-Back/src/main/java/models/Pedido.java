@@ -10,15 +10,15 @@ import com.DBsLogic.DatabaseConnection;
 public class Pedido {
 
 	private Integer id;
-	private int user_id;
-	private Endereco endereco_id;
-	private Pagamento pagamento_id;
+	private Integer user_id;
+	private Integer endereco_id;
+	private Integer pagamento_id;
 
 	public Pedido() {
 
 	}
 
-	public Pedido(Integer id, int user_id, Endereco endereco_id, Pagamento pagamento_id) {
+	public Pedido(Integer id, int user_id, int endereco_id, int pagamento_id) {
 		this.id = id;
 		this.user_id = user_id;
 		this.endereco_id = endereco_id;
@@ -41,19 +41,19 @@ public class Pedido {
 		this.user_id = user_id;
 	}
 
-	public Endereco getEndereco_id() {
+	public int getEndereco_id() {
 		return endereco_id;
 	}
 
-	public void setEndereco_id(Endereco endereco_id) {
+	public void setEndereco_id(int endereco_id) {
 		this.endereco_id = endereco_id;
 	}
 
-	public Pagamento getPagamento_id() {
+	public int getPagamento_id() {
 		return pagamento_id;
 	}
 
-	public void setPagamento_id(Pagamento pagamento_id) {
+	public void setPagamento_id(int pagamento_id) {
 		this.pagamento_id = pagamento_id;
 	}
 
