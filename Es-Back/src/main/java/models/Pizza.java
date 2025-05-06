@@ -1,16 +1,18 @@
 package models;
 
+import models.enums.Tamanho;
+
 public class Pizza extends Produto {
 
 	private int id_produto;
 	private Integer id;
-	private Character tamanho;
+	private Tamanho tamanho;
 	
 	public Pizza() {
 		
 	}
 
-	public Pizza(int id_produto, Integer id, Character tamanho) {
+	public Pizza(int id_produto, Integer id, Tamanho tamanho) {
 		this.id_produto = id_produto;
 		this.id = id;
 		this.tamanho = tamanho;
@@ -32,15 +34,15 @@ public class Pizza extends Produto {
 		this.id = id;
 	}
 
-	public Character getTamanho() {
+	public Tamanho getTamanho() {
 		return tamanho;
 	}
 
-	public void setTamanho(Character tamanho) {
+	public void setTamanho(Tamanho tamanho) {
 		this.tamanho = tamanho;
 	}
 	
-	public void setSize(char newSize) {
+	public void setSize(Tamanho newSize) {
 		tamanho = newSize;
 	}
 	

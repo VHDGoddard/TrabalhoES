@@ -10,8 +10,10 @@ import java.util.List;
 import com.DBsLogic.DatabaseConnection;
 
 import models.Pizza;
+import models.enums.Tamanho;
 
 public class PizzaDAO {
+    
     public boolean create(Pizza pizza) {
         String sql = "INSERT INTO Pizza (id_produto, tamanho) VALUES (?, ?)";
 
@@ -19,7 +21,7 @@ public class PizzaDAO {
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, pizza.getId_produto());
-            stmt.setString(2, String.valueOf(pizza.getTamanho()));
+            stmt.setString(2, pizza.getTamanho().toString());
             stmt.executeUpdate();
             return true;
         } catch (SQLException e) {
@@ -39,7 +41,7 @@ public class PizzaDAO {
             if (rs.next()) {
                 return new Pizza(rs.getInt("id"),
                         rs.getInt("id_produto"),
-                        rs.getString("tamanho").charAt(0));
+                        Tamanho.valueOf(rs.getString("tamanho").toUpperCase()));
             }
 
         } catch (SQLException e) {
@@ -58,7 +60,7 @@ public class PizzaDAO {
                 System.out.println(rs.getString("tamanho").charAt(0));
                 Pizza produto = new Pizza(rs.getInt("id"),
                 rs.getInt("id_produto"),
-                rs.getString("tamanho").charAt(0));
+                Tamanho.valueOf(rs.getString("tamanho").toUpperCase()));
                 pizzas.add(produto);
             }
 
@@ -73,7 +75,7 @@ public class PizzaDAO {
         try (Connection conn = DatabaseConnection.connect();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
                     stmt.setInt(1, pizza.getId_produto());
-                    stmt.setString(2,String.valueOf(pizza.getTamanho()));
+                    stmt.setString(4, pizza.getTipo().toString());
                     stmt.executeUpdate();
                     return true;
         } catch (SQLException e) {

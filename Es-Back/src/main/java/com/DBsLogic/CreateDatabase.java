@@ -44,7 +44,7 @@ public class CreateDatabase {
     String sqlPizza = "CREATE TABLE IF NOT EXISTS Pizza (" +
             "id INTEGER PRIMARY KEY AUTO_INCREMENT," +
             "id_produto INTEGER," +
-            "tamanho CHAR(1)," +
+            "tamanho VARCHAR(30)," +
             "FOREIGN KEY (id_produto) REFERENCES Produto(id) ON DELETE CASCADE)";
     stmt.execute(sqlPizza);
 
@@ -95,7 +95,7 @@ public class CreateDatabase {
                                "(8.50, 'Coca-Cola', 'Gelada', 'bebida')");
 
             // Pizza e Bebida
-            stmt.executeUpdate("INSERT INTO Pizza (id_produto, tamanho) VALUES (1, 'G')");
+            stmt.executeUpdate("INSERT INTO Pizza (id_produto, tamanho) VALUES (1, 'GIGANTE')");
             stmt.executeUpdate("INSERT INTO Bebida (id_produto, tamanho) VALUES (2, 'M')");
 
             // Usuário

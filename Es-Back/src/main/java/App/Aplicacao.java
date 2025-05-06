@@ -12,8 +12,8 @@ import dao.*;
 public class Aplicacao {
     public static void main(String[] args) throws Exception {
 
-        //  CreateDatabase dataBase = new CreateDatabase();
-        //  dataBase.create();
+          //CreateDatabase dataBase = new CreateDatabase();
+          //dataBase.create();
 
         port(4567); // Define a porta da API (http://localhost:4567)
 
@@ -149,6 +149,7 @@ public class Aplicacao {
         // POST /pizza - Cadastrar pizza
         post("/pizza/create", (req, res) -> {
             Pizza pizza = gson.fromJson(req.body(), Pizza.class);
+            System.out.println(pizza.getId_produto());
             if (pizzaDAO.create(pizza)) {
                 res.status(201);
                 return gson.toJson(new Resposta("Pizza cadastrada!", true));
