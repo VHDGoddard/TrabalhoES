@@ -76,13 +76,14 @@ public class ProdutoDAO {
     }
 
     public boolean update(Produto produto) {
-        String sql = "UPDATE users SET preco = ?, nome = ?, observacao = ?, tipo = ? WHERE id = ?";
+        String sql = "UPDATE Produto SET preco = ?, nome = ?, observacao = ?, tipo = ? WHERE id = ?";
         try (Connection conn = DatabaseConnection.connect();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
                     stmt.setDouble(1, produto.getPreco());
                     stmt.setString(2, produto.getNome());
                     stmt.setString(3, produto.getObservacao());
                     stmt.setString(4, produto.getTipo().toString());
+                    stmt.setInt(5, produto.getId());
                     stmt.executeUpdate();
                     return true;
         } catch (SQLException e) {

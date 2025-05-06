@@ -2,7 +2,7 @@ package models;
 
 import models.enums.Tamanho;
 
-public class Pizza extends Produto {
+public class Pizza{
 
 	private int id_produto;
 	private Integer id;
@@ -44,10 +44,5 @@ public class Pizza extends Produto {
 	
 	public void setSize(Tamanho newSize) {
 		tamanho = newSize;
-	}
-	
-	public String getPizzaDetails() {
-		return this.getNome() + ", " + this.getPreco() + 
-				", " + this.getObservacao();
 	}
 }
