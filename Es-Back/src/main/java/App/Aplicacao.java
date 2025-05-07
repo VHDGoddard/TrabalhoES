@@ -168,10 +168,6 @@ public class Aplicacao {
         get("/pizza/read/:id", (req, res) -> {
             int id = Integer.parseInt(req.params("id"));
             Pizza pizza = pizzaDAO.read(id);
-            System.out.println(pizza.getId_produto());
-            System.out.println(pizza);
-            System.out.println(pizza.getTamanho());
-            System.out.println(gson.toJson(pizza));
             if (pizza != null) {
                 return gson.toJson(pizza);
             } else {
