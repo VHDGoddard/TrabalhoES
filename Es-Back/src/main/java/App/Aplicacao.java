@@ -122,6 +122,8 @@ public class Aplicacao {
                 return gson.toJson(new Resposta("Produto não encontrado.", false));
             }
         });
+
+
         get("/produto/getAll", (req, res) -> { System.out.println(gson.toJson(produtoDAO.readAll()));
             return gson.toJson(produtoDAO.readAll());});
         // PUT /produto/:id - Atualizar produto
@@ -150,6 +152,9 @@ public class Aplicacao {
         post("/pizza/create", (req, res) -> {
             Pizza pizza = gson.fromJson(req.body(), Pizza.class);
             System.out.println(pizza.getId_produto());
+            System.out.println(pizza);
+            System.out.println(pizza.getTamanho());
+            System.out.println(gson.toJson(pizza));
             if (pizzaDAO.create(pizza)) {
                 res.status(201);
                 return gson.toJson(new Resposta("Pizza cadastrada!", true));
@@ -163,9 +168,11 @@ public class Aplicacao {
         get("/pizza/read/:id", (req, res) -> {
             int id = Integer.parseInt(req.params("id"));
             Pizza pizza = pizzaDAO.read(id);
+            System.out.println(pizza.getId_produto());
+            System.out.println(pizza);
+            System.out.println(pizza.getTamanho());
+            System.out.println(gson.toJson(pizza));
             if (pizza != null) {
-                System.out.println(pizza.getTamanho());
-                System.out.println(gson.toJson(pizza));
                 return gson.toJson(pizza);
             } else {
                 res.status(404);
@@ -186,7 +193,7 @@ public class Aplicacao {
         });
 
         // DELETE /pizza/:id - Remover pizza
-        delete("/pizza/remove/:id", (req, res) -> {
+        delete("/pizza/delete/:id", (req, res) -> {
             int id = Integer.parseInt(req.params("id"));
             if (pizzaDAO.delete(id)) {
                 return gson.toJson(new Resposta("Pizza removida!", true));
@@ -336,6 +343,16 @@ public class Aplicacao {
         delete("/pedido/delete/:id", (req, res) -> {
             pedidoDAO.delete(Integer.parseInt(req.params(":id")));
             return "Deletado";
+        });
+        get("/pedido/calculateTotal/:id", (req, res) -> {
+            int id = Integer.parseInt(req.params("id"));
+            Pedido pedido = pedidoDAO.read(id);
+            if (pedido != null) {
+                return gson.toJson(pedido.calculateTotal());
+            } else {
+                res.status(404);
+                return gson.toJson(new Resposta("Produto não encontrado.", false));
+            }
         });
 
         // PEDIDO_ITEM

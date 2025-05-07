@@ -39,7 +39,7 @@ public class BebidaDAO {
             if (rs.next()) {
                 return new Bebida(rs.getInt("id"),
                         rs.getInt("id_produto"),
-                        rs.getString("nome").charAt(0));
+                        rs.getString("tamanho").charAt(0));
             }
 
         } catch (SQLException e) {
@@ -57,7 +57,7 @@ public class BebidaDAO {
             while (rs.next()) {
                 Bebida produto = new Bebida(rs.getInt("id"),
                 rs.getInt("id_produto"),
-                rs.getString("nome").charAt(0));
+                rs.getString("tamanho").charAt(0));
                 Bebidas.add(produto);
             }
 
@@ -73,6 +73,7 @@ public class BebidaDAO {
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
                     stmt.setInt(1, bebida.getId_produto());
                     stmt.setString(2,String.valueOf(bebida.getTamanho()));
+                    stmt.setInt(3, bebida.getId());
                     stmt.executeUpdate();
                     return true;
         } catch (SQLException e) {

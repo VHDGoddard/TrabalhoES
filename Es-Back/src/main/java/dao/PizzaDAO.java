@@ -75,7 +75,8 @@ public class PizzaDAO {
         try (Connection conn = DatabaseConnection.connect();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
                     stmt.setInt(1, pizza.getId_produto());
-                    stmt.setString(4, pizza.getTipo().toString());
+                    stmt.setString(2, pizza.getTamanho().toString());
+                    stmt.setInt(3, pizza.getId());
                     stmt.executeUpdate();
                     return true;
         } catch (SQLException e) {
