@@ -6,6 +6,7 @@ import pizza1 from '../../assets/images/pizza1.jpg'; // Imagens de exemplo
 import pizza2 from '../../assets/images/pizza2.jpg';
 import pizza3 from '../../assets/images/pizza3.jpg';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import '../../assets/fonts/Bravecho.otf';
 
 const HomePage = () => {
     const theme = useTheme();
@@ -29,6 +30,42 @@ const HomePage = () => {
             description: 'Mussarela, gorgonzola, parmesão e provolone',
             image: pizza3,
         },
+        {
+            id: 4,
+            name: 'Frango com Catupiry',
+            description: 'Molho de tomate, frango desfiado, catupiry e orégano',
+            image: pizza1,
+        },
+        {
+            id: 5,
+            name: 'Calabresa Especial',
+            description: 'Molho de tomate, calabresa, cebola e azeitonas',
+            image: pizza2,
+        },
+        {
+            id: 6,
+            name: 'Vegetariana',
+            description: 'Molho de tomate, abobrinha, berinjela, pimentão e manjericão',
+            image: pizza3,
+        },
+        {
+            id: 7,
+            name: 'Portuguesa',
+            description: 'Molho de tomate, presunto, ovos, cebola e azeitonas',
+            image: pizza1,
+        },
+        {
+            id: 8,
+            name: 'Bacon Lovers',
+            description: 'Molho de tomate, mussarela, bacon crocante e cheddar',
+            image: pizza2,
+        },
+        {
+            id: 9,
+            name: 'Mexicana',
+            description: 'Molho de tomate, carne moída, pimenta jalapeño e cheddar',
+            image: pizza3,
+        },
     ];
 
     return (
@@ -42,7 +79,7 @@ const HomePage = () => {
                     alignItems: 'center',
                     justifyContent: 'center',
                     color: 'white',
-                    mb: 8,
+                    
                 }}
             >
                 <Box
@@ -75,12 +112,13 @@ const HomePage = () => {
                             component="h1"
                             gutterBottom
                             sx={{
-                                fontWeight: 700,
+                                fontWeight: 100,
                                 fontSize: { xs: '2.5rem', md: '4rem' },
                                 textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
+                                
                             }}
                         >
-                            Pizzaria Delícia
+                            Delicious
                         </Typography>
                         <Typography
                             variant="h5"
@@ -112,7 +150,7 @@ const HomePage = () => {
                                 component={Link}
                                 to="/cadastrar-cliente"
                                 variant="contained"
-                                color="secondary"
+                                
                                 size="large"
                                 sx={{
                                     px: 4,
@@ -120,6 +158,9 @@ const HomePage = () => {
                                     fontSize: '1.1rem',
                                     borderWidth: 2,
                                     '&:hover': { borderWidth: 2 },
+                                    backgroundColor: theme.palette.secondary.main,
+                                    color: theme.palette.primary.main,
+                                    
                                 }}
                             >
                                 Cadastre-se
@@ -136,7 +177,7 @@ const HomePage = () => {
                     component="h2"
                     align="center"
                     gutterBottom
-                    sx={{ fontWeight: 700, mb: 6 }}
+                    sx={{ fontWeight: 700, mb: 6, color: theme.palette.text.main}}
                 >
                     Nossas Pizzas Especiais
                 </Typography>
@@ -154,11 +195,13 @@ const HomePage = () => {
                                         height: '100%',
                                         display: 'flex',
                                         flexDirection: 'column',
-                                        borderRadius: 2,
-                                        boxShadow: 3,
-                                        transition: 'transform 0.3s',
+                                        borderRadius: 3,
+                                        boxShadow: 4,
+                                        backgroundColor: theme.palette.background.contrast,
+                                        transition: 'transform 0.3s, box-shadow 0.3s',
                                         '&:hover': {
-                                            boxShadow: 6,
+                                            transform: 'scale(1.05)',
+                                            boxShadow: 8,
                                         },
                                     }}
                                 >
@@ -167,13 +210,15 @@ const HomePage = () => {
                                         image={pizza.image}
                                         alt={pizza.name}
                                         sx={{
-                                            height: 200,
+                                            height: 220,
                                             width: '100%',
                                             objectFit: 'cover',
+                                            borderTopLeftRadius: 12,
+                                            borderTopRightRadius: 12,
                                         }}
                                     />
                                     <CardContent sx={{ flexGrow: 1 }}>
-                                        <Typography gutterBottom variant="h5" component="h3">
+                                        <Typography gutterBottom variant="h5" component="h3" sx={{ fontWeight: 600 }}>
                                             {pizza.name}
                                         </Typography>
                                         <Typography variant="body1" color="text.secondary">
@@ -188,13 +233,12 @@ const HomePage = () => {
                                             color="primary"
                                             size="medium"
                                             sx={{
-                                                px:2,
+                                                px: 2,
                                                 py: 1,
                                                 borderRadius: '8px',
                                             }}
-                                            
                                         >
-                                        <AddShoppingCartIcon />
+                                            <AddShoppingCartIcon />
                                         </Button>
                                     </Box>
                                 </Card>
@@ -208,7 +252,7 @@ const HomePage = () => {
             <Box
                 sx={{
                     py: 10,
-                    backgroundColor: theme.palette.primary.main,
+                    backgroundColor: theme.palette.background.contrast2,
                     color: 'white',
                 }}
             >
@@ -229,7 +273,7 @@ const HomePage = () => {
                             component={Link}
                             to="/cadastrar-cliente"
                             variant="contained"
-                            color="secondary"
+                            color="primary"
                             size="large"
                             sx={{
                                 px: 6,
@@ -254,7 +298,7 @@ const HomePage = () => {
                             viewport={{ once: true }}
                             transition={{ duration: 0.6 }}
                         >
-                            <Box textAlign="center" sx={{ backgroundColor: theme.palette.complementary.main, p: 4, borderRadius: 100, height: 300 }}>
+                            <Box textAlign="center" sx={{ backgroundColor: theme.palette.primary.main, p: 4, borderRadius: 100, height: 300 }}>
                                 <Box
                                     sx={{
                                         width: 80,
@@ -286,7 +330,7 @@ const HomePage = () => {
                             viewport={{ once: true }}
                             transition={{ duration: 0.6, delay: 0.2 }}
                         >
-                            <Box textAlign="center" sx={{ backgroundColor: theme.palette.complementary.main, p: 4, borderRadius: 100, height: 300 }}>
+                            <Box textAlign="center" sx={{ backgroundColor: theme.palette.primary.main, p: 4, borderRadius: 100, height: 300 }}>
                                 <Box
                                     sx={{
                                         width: 80,
@@ -318,7 +362,7 @@ const HomePage = () => {
                             viewport={{ once: true }}
                             transition={{ duration: 0.6, delay: 0.4 }}
                         >
-                            <Box textAlign="center" sx={{ backgroundColor: theme.palette.complementary.main, p: 4, borderRadius: 100, height: 300 }}>
+                            <Box textAlign="center" sx={{ backgroundColor: theme.palette.primary.main, p: 4, borderRadius: 100, height: 300 }}>
                                 <Box
                                     sx={{
                                         width: 80,

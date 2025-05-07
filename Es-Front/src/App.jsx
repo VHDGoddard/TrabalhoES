@@ -22,17 +22,19 @@ const theme = createTheme({
       main: '#e53935', // Vermelho de pizza
     },
     secondary: {
-      main: '#FFCCC9', // Laranja
+      main: '#F5F5F5', // Laranja
     },
-    complementary: {
+    text: {
       main: '#2E5339', 
     },
     complementary2: {
       main: '#495F41', 
     },
     background: {
-      default: '#00FDDC',
-    },
+      main: '#f5ebe0',
+      contrast: '#FBF7F3',
+      contrast2: '#d5bdaf',
+    }, 
   },
   typography: {
     fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
