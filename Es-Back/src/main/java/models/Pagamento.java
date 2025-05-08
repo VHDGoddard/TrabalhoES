@@ -1,20 +1,24 @@
 package models;
 
+import java.time.LocalDateTime;
+
+import models.enums.TipoPagamento;
+
 public class Pagamento {
 	private Integer id;
-	private Pedido pedido_id;
-	private Produto produto_id;
-	private Integer quantidade;
+	private TipoPagamento tipoPagamento;
+	private LocalDateTime horario;
+	private Double valor;
 	
 	public Pagamento () {
 		
 	}
 
-	public Pagamento(Integer id, Pedido pedido_id, Produto produto_id, Integer quantidade) {
+	public Pagamento(Integer id, TipoPagamento tipoPagamento, LocalDateTime horario, Double valor) {
 		this.id = id;
-		this.pedido_id = pedido_id;
-		this.produto_id = produto_id;
-		this.quantidade = quantidade;
+		this.tipoPagamento = tipoPagamento;
+		this.horario = horario;
+		this.valor = valor;
 	}
 
 	public Integer getId() {
@@ -25,28 +29,28 @@ public class Pagamento {
 		this.id = id;
 	}
 
-	public Pedido getPedido_id() {
-		return pedido_id;
+	public TipoPagamento getTipoPagamento() {
+		return tipoPagamento;
 	}
 
-	public void setPedido_id(Pedido pedido_id) {
-		this.pedido_id = pedido_id;
+	public void setTipoPagamento(TipoPagamento tipoPagamento) {
+		this.tipoPagamento = tipoPagamento;
 	}
 
-	public Produto getProduto_id() {
-		return produto_id;
+	public LocalDateTime getHorario() {
+		return horario;
 	}
 
-	public void setProduto_id(Produto produto_id) {
-		this.produto_id = produto_id;
+	public void setHorario(LocalDateTime horario) {
+		this.horario = horario;
 	}
 
-	public Integer getQuantidade() {
-		return quantidade;
+	public Double getValor() {
+		return valor;
 	}
 
-	public void setQuantidade(Integer quantidade) {
-		this.quantidade = quantidade;
+	public void setValor(Double valor) {
+		this.valor = valor;
 	}
 	
 	

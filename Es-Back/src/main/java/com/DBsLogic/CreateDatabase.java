@@ -57,9 +57,9 @@ public class CreateDatabase {
 
     String sqlPagamento = "CREATE TABLE IF NOT EXISTS Pagamento (" +
             "id INTEGER PRIMARY KEY AUTO_INCREMENT," +
-            "tipo VARCHAR(50)," +
-            "horario DATETIME," +
-            "valor FLOAT)";
+            "tipo_pagamento VARCHAR(20)," +
+            "horario TIMESTAMP," +
+            "valor DOUBLE)";
     stmt.execute(sqlPagamento);
 
     String sqlPedido = "CREATE TABLE IF NOT EXISTS Pedido (" +
@@ -83,7 +83,6 @@ public class CreateDatabase {
 
             System.out.println("Tabelas criadas com sucesso!");
 
-            // Inserções iniciais (em ordem de dependência)
 
             // Endereço
             stmt.executeUpdate("INSERT INTO Endereco (rua, bairro, numero, complemento) VALUES " +
@@ -101,10 +100,14 @@ public class CreateDatabase {
             // Usuário
             stmt.executeUpdate("INSERT INTO users (email, password, phone_number, cpf, endereco_id) VALUES " +
                                "('joao@email.com', '123456', '11999999999', '123456789123', 1)");
+            stmt.executeUpdate("INSERT INTO users (email, password, phone_number, cpf, endereco_id) VALUES " +
+                               "('paulo@gmail.com', '123456', '11999999999', '25943588787', 1)");
 
             // Pagamento
-            stmt.executeUpdate("INSERT INTO Pagamento (tipo, horario, valor) VALUES " +
-                               "('Cartão de Crédito', NOW(), 48.40)");
+            stmt.executeUpdate("INSERT INTO Pagamento (tipo_pagamento, horario, valor) VALUES " +
+                               "('CREDITO', NOW(), 48.40)");
+            stmt.executeUpdate("INSERT INTO Pagamento (tipo_pagamento, horario, valor) VALUES " +
+                               "('PIX', NOW(), 60.20)");
 
             // Pedido
             stmt.executeUpdate("INSERT INTO Pedido (user_id, endereco_id, Pagamento_id) VALUES (1, 1, 1)");
