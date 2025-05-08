@@ -1,6 +1,6 @@
 package models;
 
-public class Bebida extends Produto{
+public class Bebida{
 
 	private int id_produto;
 	private Integer id;
@@ -44,9 +44,5 @@ public class Bebida extends Produto{
 		tamanho = newSize;
 	}
 	
-	public String getBeverageDetails() {
-		return this.getNome() + ", " + this.getPreco() +
-			", " + this.getObservacao();
-	}
 	
 }
