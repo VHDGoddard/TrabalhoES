@@ -1,72 +1,23 @@
-import { Box, Button, Container, Grid, Typography, Card, CardContent, CardMedia, useTheme } from '@mui/material';
+import { Box, Button, Container, Grid, Typography, Card, CardContent, CardMedia, useTheme, IconButton } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { color, motion } from 'framer-motion';
 import heroImage from '../../assets/images/hero.jpg'; // Substitua por sua imagem
-import pizza1 from '../../assets/images/pizza1.jpg'; // Imagens de exemplo
-import pizza2 from '../../assets/images/pizza2.jpg';
-import pizza3 from '../../assets/images/pizza3.jpg';
+import callToAction from '../../assets/images/callToAction.jpg'; // Imagem de exemplo
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import '../../assets/fonts/Bravecho.otf';
+import pizzas from '../../assets/pizzas.json';
+
+// Dynamically import all images in the assets/images folder
+const images = import.meta.glob('../../assets/images/*.jpg', { eager: true });
+
+// Map pizzas with dynamically resolved images
+const featuredPizzas = pizzas.map(pizza => {
+  const imagePath = `../../assets${pizza.image}`;
+  return { ...pizza, image: images[imagePath]?.default || '' };
+});
 
 const HomePage = () => {
     const theme = useTheme();
-
-    const featuredPizzas = [
-        {
-            id: 1,
-            name: 'Margherita Clássica',
-            description: 'Molho de tomate, mussarela fresca, manjericão e azeite',
-            image: pizza1,
-        },
-        {
-            id: 2,
-            name: 'Pepperoni Picante',
-            description: 'Molho de tomate, mussarela, pepperoni e pimenta calabresa',
-            image: pizza2,
-        },
-        {
-            id: 3,
-            name: 'Quatro Queijos',
-            description: 'Mussarela, gorgonzola, parmesão e provolone',
-            image: pizza3,
-        },
-        {
-            id: 4,
-            name: 'Frango com Catupiry',
-            description: 'Molho de tomate, frango desfiado, catupiry e orégano',
-            image: pizza1,
-        },
-        {
-            id: 5,
-            name: 'Calabresa Especial',
-            description: 'Molho de tomate, calabresa, cebola e azeitonas',
-            image: pizza2,
-        },
-        {
-            id: 6,
-            name: 'Vegetariana',
-            description: 'Molho de tomate, abobrinha, berinjela, pimentão e manjericão',
-            image: pizza3,
-        },
-        {
-            id: 7,
-            name: 'Portuguesa',
-            description: 'Molho de tomate, presunto, ovos, cebola e azeitonas',
-            image: pizza1,
-        },
-        {
-            id: 8,
-            name: 'Bacon Lovers',
-            description: 'Molho de tomate, mussarela, bacon crocante e cheddar',
-            image: pizza2,
-        },
-        {
-            id: 9,
-            name: 'Mexicana',
-            description: 'Molho de tomate, carne moída, pimenta jalapeño e cheddar',
-            image: pizza3,
-        },
-    ];
 
     return (
         <Box sx={{ overflowX: 'hidden' }}>
@@ -118,7 +69,7 @@ const HomePage = () => {
                                 
                             }}
                         >
-                            Delicious
+                            Benvenuto
                         </Typography>
                         <Typography
                             variant="h5"
@@ -141,6 +92,7 @@ const HomePage = () => {
                                 sx={{
                                     px: 4,
                                     py: 1.5,
+                                    fontWeight: 600,
                                     fontSize: '1.1rem',
                                 }}
                             >
@@ -156,6 +108,7 @@ const HomePage = () => {
                                     px: 4,
                                     py: 1.5,
                                     fontSize: '1.1rem',
+                                    fontWeight: 600,
                                     borderWidth: 2,
                                     '&:hover': { borderWidth: 2 },
                                     backgroundColor: theme.palette.secondary.main,
@@ -183,7 +136,11 @@ const HomePage = () => {
                 </Typography>
                 <Grid container spacing={4}>
                     {featuredPizzas.map((pizza, index) => (
-                        <Grid item size={{ xs: 12, sm: 6, md: 4 }} key={pizza.id}>
+                        <Grid
+                            item
+                            size={{ xs: 12, sm: 6, md: 4 }}
+                            key={pizza.id}
+                        >
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
@@ -193,6 +150,8 @@ const HomePage = () => {
                                 <Card
                                     sx={{
                                         height: '100%',
+                                        width: '100%',
+                                        height: 400,
                                         display: 'flex',
                                         flexDirection: 'column',
                                         borderRadius: 3,
@@ -218,28 +177,27 @@ const HomePage = () => {
                                         }}
                                     />
                                     <CardContent sx={{ flexGrow: 1 }}>
-                                        <Typography gutterBottom variant="h5" component="h3" sx={{ fontWeight: 600 }}>
+                                        <Typography gutterBottom variant="h5" component="h3" sx={{ fontWeight: 600, color: theme.palette.text.main }}>
                                             {pizza.name}
                                         </Typography>
-                                        <Typography variant="body1" color="text.secondary">
+                                        <Typography variant="body1" sx={{ color: theme.palette.text.muted }}>
                                             {pizza.description}
                                         </Typography>
                                     </CardContent>
                                     <Box sx={{ p: 2, textAlign: 'left' }}>
-                                        <Button
+                                        <IconButton
                                             component={Link}
                                             to="/realizar-pedido"
-                                            variant="contained"
+                                            
                                             color="primary"
                                             size="medium"
                                             sx={{
-                                                px: 2,
-                                                py: 1,
-                                                borderRadius: '8px',
+                                                
+                                                borderRadius: '20px',
                                             }}
                                         >
                                             <AddShoppingCartIcon />
-                                        </Button>
+                                        </IconButton>
                                     </Box>
                                 </Card>
                             </motion.div>
@@ -252,11 +210,25 @@ const HomePage = () => {
             <Box
                 sx={{
                     py: 10,
-                    backgroundColor: theme.palette.background.contrast2,
+                    position: 'relative',
+                    background: `linear-gradient(to right, ${theme.palette.primary.main}, transparent)`,
                     color: 'white',
                 }}
             >
-                <Container maxWidth="lg"  textAlign="center">
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        backgroundImage: `url(${callToAction})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'right',
+                        zIndex: -1,
+                    }}
+                />
+                <Container maxWidth="lg" textAlign="center">
                     <motion.div
                         initial={{ opacity: 0 }}
                         whileInView={{ opacity: 1 }}
@@ -273,13 +245,14 @@ const HomePage = () => {
                             component={Link}
                             to="/cadastrar-cliente"
                             variant="contained"
-                            color="primary"
+                            color="secondary"
                             size="large"
                             sx={{
                                 px: 6,
                                 py: 1.5,
                                 fontSize: '1.1rem',
                                 fontWeight: 600,
+                                color: theme.palette.primary.main,
                             }}
                         >
                             Cadastre-se Grátis
@@ -303,7 +276,7 @@ const HomePage = () => {
                                     sx={{
                                         width: 80,
                                         height: 80,
-                                        backgroundColor: theme.palette.complementary2.main,
+                                        backgroundColor: theme.palette.secondary.main,
                                         borderRadius: '50%',
                                         display: 'flex',
                                         alignItems: 'center',
@@ -335,7 +308,7 @@ const HomePage = () => {
                                     sx={{
                                         width: 80,
                                         height: 80,
-                                        backgroundColor: theme.palette.primary.light,
+                                        backgroundColor: theme.palette.secondary.main,
                                         borderRadius: '50%',
                                         display: 'flex',
                                         alignItems: 'center',
@@ -367,7 +340,7 @@ const HomePage = () => {
                                     sx={{
                                         width: 80,
                                         height: 80,
-                                        backgroundColor: theme.palette.primary.light,
+                                        backgroundColor: theme.palette.secondary.main,
                                         borderRadius: '50%',
                                         display: 'flex',
                                         alignItems: 'center',

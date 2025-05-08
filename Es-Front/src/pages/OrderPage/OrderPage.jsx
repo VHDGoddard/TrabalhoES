@@ -26,10 +26,12 @@ import {
   Remove,
   ShoppingCart,
   LocationOn,
-  ArrowBack
+  ArrowBack,
+  Delete
 } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import pizzas from '../../assets/pizzas.json';
 
 const OrderPage = () => {
   const navigate = useNavigate();
@@ -39,30 +41,11 @@ const OrderPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Mock de produtos
-  const products = [
-    {
-      id: 1,
-      name: 'Margherita',
-      description: 'Molho de tomate, mussarela, manjericão',
-      price: 45.90,
-      image: '/pizza1.jpg'
-    },
-    {
-      id: 2,
-      name: 'Pepperoni',
-      description: 'Molho de tomate, mussarela, pepperoni',
-      price: 52.90,
-      image: '/pizza2.jpg'
-    },
-    {
-      id: 3,
-      name: 'Quatro Queijos',
-      description: 'Mussarela, gorgonzola, parmesão, provolone',
-      price: 55.90,
-      image: '/pizza3.jpg'
-    }
-  ];
+  // Dynamically import images for pizzas
+  const products = pizzas.map(pizza => ({
+    ...pizza,
+    image: `src/assets${pizza.image}`
+  }));
 
   // Mock de endereços
   const addresses = [
@@ -126,19 +109,25 @@ const OrderPage = () => {
           Fazer Pedido
         </Typography>
       </Box>
-
-      <Grid container spacing={4}>
-        {/* Seção de Produtos */}
-        <Grid item xs={12} md={8}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600, mb: 2 }}>
+      <Typography variant="h5" gutterBottom sx={{ fontWeight: 600, mb: 2 }}>
             Cardápio
           </Typography>
+      <Grid container spacing={4}>
+        {/* Seção de Produtos */}
+        <Grid item size={{ xs: 12, md: 8 }}>
+          
 
           <Grid container spacing={3}>
             {products.map((product) => (
-              <Grid item xs={12} sm={6} key={product.id}>
+              <Grid item size={{ xs: 12, sm: 4 }} key={product.id}>
                 <motion.div whileHover={{ y: -5 }}>
-                  <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                  <Card sx={{ 
+                    width: '100%',
+                    height: '100%',
+                    display: 'flex', 
+                    borderRadius: 3,
+                    flexDirection: 'column' 
+                    }}>
                     <CardMedia
                       component="img"
                       height="160"
@@ -175,7 +164,7 @@ const OrderPage = () => {
         </Grid>
 
         {/* Seção do Carrinho e Endereço */}
-        <Grid item xs={12} md={4}>
+        <Grid item size={{ xs: 12, md: 4 }}>
           <Paper elevation={3} sx={{ p: 3, borderRadius: 2, position: 'sticky', top: 20 }}>
             <Typography variant="h5" gutterBottom sx={{ fontWeight: 600, mb: 3 }}>
               Seu Pedido
@@ -221,6 +210,14 @@ const OrderPage = () => {
                           onClick={() => addToCart(item)}
                         >
                           <Add fontSize="small" />
+                        </IconButton>
+                        <IconButton
+                          size="small"
+                          color="error"
+                          onClick={() => setCart(prevCart => prevCart.filter(cartItem => cartItem.id !== item.id))}
+                          sx={{ ml: 2 }}
+                        >
+                          <Delete fontSize="small" />
                         </IconButton>
                       </Box>
                     </Box>

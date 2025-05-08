@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "name": "Margherita",
+    "description": "Molho de tomate, mussarela, manjericão",
+    "price": 45.90,
+    "image": "/images/pizza1.jpg"
+  },
+  {
+    "id": 2,
+    "name": "Pepperoni",
+    "description": "Molho de tomate, mussarela, pepperoni",
+    "price": 52.90,
+    "image": "/images/pizza2.jpg"
+  },
+  {
+    "id": 3,
+    "name": "Quatro Queijos",
+    "description": "Mussarela, gorgonzola, parmesão, provolone",
+    "price": 55.90,
+    "image": "/images/pizza3.jpg"
+  }
+]

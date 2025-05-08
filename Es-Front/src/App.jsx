@@ -26,6 +26,7 @@ const theme = createTheme({
     },
     text: {
       main: '#2E5339', 
+      muted: '#58695D',
     },
     complementary2: {
       main: '#495F41', 
