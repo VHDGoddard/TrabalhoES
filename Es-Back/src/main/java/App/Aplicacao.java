@@ -6,18 +6,43 @@ import java.util.List;
 
 import com.DBsLogic.CreateDatabase;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
+
 import models.*;
 import dao.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Aplicacao {
     public static void main(String[] args) throws Exception {
 
-          //CreateDatabase dataBase = new CreateDatabase();
-          //dataBase.create();
+        // CreateDatabase dataBase = new CreateDatabase();
+        // dataBase.create();
 
         port(4567); // Define a porta da API (http://localhost:4567)
 
-        Gson gson = new Gson(); // Para conversão de objetos para JSON e vice-versa
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDateTime.class, new JsonDeserializer<LocalDateTime>() {
+                    @Override
+                    public LocalDateTime deserialize(JsonElement json, java.lang.reflect.Type typeOfT,
+                            JsonDeserializationContext context) {
+                        return LocalDateTime.parse(json.getAsString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+                    }
+                })
+                .registerTypeAdapter(LocalDateTime.class, new JsonSerializer<LocalDateTime>() {
+                    @Override
+                    public JsonElement serialize(LocalDateTime src, java.lang.reflect.Type typeOfSrc,
+                            JsonSerializationContext context) {
+                        return new JsonPrimitive(src.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+                    }
+                })
+                .create();
 
         UsersDAO userDAO = new UsersDAO();
         ProdutoDAO produtoDAO = new ProdutoDAO();
@@ -122,8 +147,10 @@ public class Aplicacao {
                 return gson.toJson(new Resposta("Produto não encontrado.", false));
             }
         });
-        get("/produto/getAll", (req, res) -> { System.out.println(gson.toJson(produtoDAO.readAll()));
-            return gson.toJson(produtoDAO.readAll());});
+        get("/produto/getAll", (req, res) -> {
+            System.out.println(gson.toJson(produtoDAO.readAll()));
+            return gson.toJson(produtoDAO.readAll());
+        });
         // PUT /produto/:id - Atualizar produto
         put("/produto/update/:id", (req, res) -> {
             Produto produto = gson.fromJson(req.body(), Produto.class);
@@ -253,7 +280,6 @@ public class Aplicacao {
             }
         });
 
-
         // ENDERECO
 
         post("/endereco/create", (req, res) -> {
@@ -285,10 +311,23 @@ public class Aplicacao {
         // PAGAMENTO
 
         post("/pagamento/create", (req, res) -> {
-            Pagamento pagamento = gson.fromJson(req.body(), Pagamento.class);
-            pagamentoDAO.create(pagamento);
-            res.status(201);
-            return gson.toJson(pagamento);
+            try {
+                Pagamento pagamento = gson.fromJson(req.body(), Pagamento.class);
+                
+
+                boolean sucesso = pagamentoDAO.create(pagamento);
+                if (sucesso) {
+                    res.status(201);
+                    return gson.toJson(new Resposta("Pagamento criado com sucesso!", true));
+                } else {
+                    res.status(500);
+                    return gson.toJson(new Resposta("Erro ao criar pagamento!", false));
+                }
+            } catch (Exception e) {
+                e.printStackTrace(); // Mostra erro no console
+                res.status(500);
+                return gson.toJson(new Resposta("Erro interno: " + e.getMessage(), false));
+            }
         });
 
         get("/pagamento/read/:id", (req, res) -> {
@@ -311,7 +350,7 @@ public class Aplicacao {
         });
 
         // PEDIDO
-        
+
         post("/pedido/create", (req, res) -> {
             Pedido pedido = gson.fromJson(req.body(), Pedido.class);
             pedidoDAO.create(pedido);
@@ -339,7 +378,6 @@ public class Aplicacao {
         });
 
         // PEDIDO_ITEM
-        
 
         post("/pedido_item/create", (req, res) -> {
             Pedido_item item = gson.fromJson(req.body(), Pedido_item.class);
