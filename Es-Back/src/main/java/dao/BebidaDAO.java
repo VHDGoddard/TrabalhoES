@@ -1,9 +1,5 @@
 package dao;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,11 +12,18 @@ public class BebidaDAO {
         String sql = "INSERT INTO Bebida (id_produto, tamanho) VALUES (?, ?)";
 
         try (Connection conn = DatabaseConnection.connect();
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setInt(1, bebida.getId_produto());
             stmt.setString(2,String.valueOf(bebida.getTamanho()));
             stmt.executeUpdate();
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+            if (generatedKeys.next()) {
+                bebida.setId(generatedKeys.getInt(1)); // Aqui você atribui o ID ao objeto
+            } else {
+                return false;
+            }
+        }
             return true;
         } catch (SQLException e) {
             e.printStackTrace();

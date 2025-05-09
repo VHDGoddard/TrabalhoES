@@ -1,9 +1,5 @@
 package dao;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,10 +10,10 @@ import models.enums.Tipo;
 
 public class ProdutoDAO {
     public boolean create(Produto produto) {
-        String sql = "INSERT INTO Produto ( preco, nome, observacao, tipo, url) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO Produto ( preco, nome, observacao, tipo, url) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.connect();
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setDouble(1, produto.getPreco());
             stmt.setString(2, produto.getNome());
@@ -25,6 +21,13 @@ public class ProdutoDAO {
             stmt.setString(4, produto.getTipo().toString());
             stmt.setString(5, produto.getUrl());
             stmt.executeUpdate();
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+            if (generatedKeys.next()) {
+                produto.setId(generatedKeys.getInt(1)); // Aqui você atribui o ID ao objeto
+            } else {
+                return false;
+            }
+        }
             return true;
         } catch (SQLException e) {
             e.printStackTrace();

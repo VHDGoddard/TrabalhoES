@@ -52,6 +52,7 @@ const getAddressById = async (id) => {
 // Criar um endereço
 const createAddress = async (addressData) => {
   try {
+    console.log(addressData)
     const response = await fetch(`${API_URL}/endereco/create`, {
       method: 'POST',
       headers: {

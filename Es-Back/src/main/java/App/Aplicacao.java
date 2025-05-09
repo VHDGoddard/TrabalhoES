@@ -2,7 +2,9 @@ package App;
 
 import static spark.Spark.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.DBsLogic.CreateDatabase;
 import com.google.gson.Gson;
@@ -27,8 +29,8 @@ import java.time.format.DateTimeFormatter;
 public class Aplicacao {
     public static void main(String[] args) throws Exception {
 
-        // CreateDatabase dataBase = new CreateDatabase();
-        // dataBase.create();
+         //CreateDatabase dataBase = new CreateDatabase();
+         //dataBase.create();
 
         port(4567); // Define a porta da API (http://localhost:4567)
 
@@ -91,7 +93,12 @@ public class Aplicacao {
             boolean sucesso = user.login(loginRequest.getEmail(), loginRequest.getPassword());
 
             if (sucesso) {
-                return gson.toJson(new Resposta("Login realizado com sucesso!", true));
+                Map<String, Object> resposta = new HashMap<>();
+                    resposta.put("mensagem", "Pagamento criado com sucesso!");
+                    resposta.put("sucesso", true);
+                    resposta.put("id", user.getId());
+
+                    return gson.toJson(resposta);
             } else {
                 res.status(401);
                 return gson.toJson(new Resposta("Email ou senha incorretos.", false));
@@ -185,6 +192,7 @@ public class Aplicacao {
             res.header("Access-Control-Allow-Headers", "*");
             res.header("Access-Control-Max-Age", "86400");
             Produto produto = gson.fromJson(req.body(), Produto.class);
+            System.out.println(produto.getUrl());
             if (produtoDAO.create(produto)) {
                 res.status(201);
                 return gson.toJson(new Resposta("Produto cadastrado!", true));
@@ -427,6 +435,7 @@ public class Aplicacao {
             res.header("Access-Control-Allow-Headers", "*");
             res.header("Access-Control-Max-Age", "86400");
             Endereco endereco = gson.fromJson(req.body(), Endereco.class);
+            System.out.println(endereco.getBairro() + endereco.getCep() + endereco.getComplemento() + endereco.getRua() + endereco.getNumero() + endereco.getUser());
             enderecoDAO.create(endereco);
             res.status(201);
             return gson.toJson(endereco);
@@ -483,11 +492,17 @@ public class Aplicacao {
             res.header("Access-Control-Max-Age", "86400");
             try {
                 Pagamento pagamento = gson.fromJson(req.body(), Pagamento.class);
-               // pagamento.setTipoPagamento(TipoPagamento.valueOf(gson.toJ(req.body())));
+                // pagamento.setTipoPagamento(TipoPagamento.valueOf(gson.toJ(req.body())));
                 boolean sucesso = pagamentoDAO.create(pagamento);
                 if (sucesso) {
                     res.status(201);
-                    return gson.toJson(new Resposta("Pagamento criado com sucesso!", true));
+                    Map<String, Object> resposta = new HashMap<>();
+                    resposta.put("mensagem", "Pagamento criado com sucesso!");
+                    resposta.put("sucesso", true);
+                    resposta.put("id", pagamento.getId());
+
+                    return gson.toJson(resposta);
+
                 } else {
                     res.status(500);
                     return gson.toJson(new Resposta("Erro ao criar pagamento!", false));

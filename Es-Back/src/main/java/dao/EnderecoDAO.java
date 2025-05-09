@@ -10,15 +10,24 @@ import models.Endereco;
 public class EnderecoDAO {
 
     public boolean create(Endereco endereco) {
-        String sql = "INSERT INTO Endereco (rua, bairro, numero, complemento, cep) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO Endereco (rua, bairro, numero, complemento, cep, user_id) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.connect();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, endereco.getRua());
             stmt.setString(2, endereco.getBairro());
             stmt.setInt(3, endereco.getNumero());
             stmt.setString(4, endereco.getComplemento());
             stmt.setString(5, endereco.getCep());
+            stmt.setInt(6, endereco.getUser());
             stmt.executeUpdate();
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+            if (generatedKeys.next()) {
+                endereco.setId(generatedKeys.getInt(1)); // Aqui você atribui o ID ao objeto
+            } else {
+               System.out.println( "NUM DEU");
+                return false;
+            }
+        }
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -39,7 +48,8 @@ public class EnderecoDAO {
                     rs.getString("bairro"),
                     rs.getInt("numero"),
                     rs.getString("complemento"),
-                    rs.getString("cep")
+                    rs.getString("cep"),
+                    rs.getInt("user_id")
                 );
             }
         } catch (SQLException e) {
@@ -61,7 +71,8 @@ public class EnderecoDAO {
                     rs.getString("bairro"),
                     rs.getInt("numero"),
                     rs.getString("complemento"),
-                    rs.getString("cep")
+                    rs.getString("cep"),
+                    rs.getInt("user_id")
                 );
                 enderecos.add(endereco);
             }
@@ -72,7 +83,7 @@ public class EnderecoDAO {
     }
 
     public boolean update(Endereco endereco) {
-        String sql = "UPDATE Endereco SET rua = ?, bairro = ?, numero = ?, complemento = ?, cep = ? WHERE id = ?";
+        String sql = "UPDATE Endereco SET rua = ?, bairro = ?, numero = ?, complemento = ?, cep = ?, user_id = ? WHERE id = ?";
         try (Connection conn = DatabaseConnection.connect();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, endereco.getRua());
@@ -80,7 +91,8 @@ public class EnderecoDAO {
             stmt.setInt(3, endereco.getNumero());
             stmt.setString(4, endereco.getComplemento());
             stmt.setString(5, endereco.getCep());
-            stmt.setInt(6, endereco.getId());
+            stmt.setInt(6, endereco.getUser());
+            stmt.setInt(7, endereco.getId());
             stmt.executeUpdate();
             return true;
         } catch (SQLException e) {

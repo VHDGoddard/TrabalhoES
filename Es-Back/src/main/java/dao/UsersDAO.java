@@ -1,9 +1,5 @@
 package dao;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +12,7 @@ public class UsersDAO {
         String sql = "INSERT INTO users (email, password, phone_number, cpf, nome) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.connect();
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setString(1, user.getEmail());
             stmt.setString(2, user.getPassword());
@@ -24,6 +20,13 @@ public class UsersDAO {
             stmt.setString(4, user.getCpf());
             stmt.setString(5, user.getNome());
             stmt.executeUpdate();
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+            if (generatedKeys.next()) {
+                user.setId(generatedKeys.getInt(1)); // Aqui você atribui o ID ao objeto
+            } else {
+                return false;
+            }
+        }
             return true;
         } catch (SQLException e) {
             e.printStackTrace();

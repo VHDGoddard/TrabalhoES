@@ -32,7 +32,7 @@ const ProductRegister = () => {
     name: '',
     description: '',
     price: '',
-    imageUrl: '',
+    Url: '',
     category: '',
     size: 'medium', // Only for pizzas
     volume: 'P' // Default to P for drinks
@@ -147,7 +147,7 @@ const ProductRegister = () => {
       nome: formData.name,
       preco: parseFloat(formData.price),
       observacao: formData.description + (formData.category ? ` | Categoria: ${formData.category}` : ''),
-      url: formData.imageUrl || '',
+      Url: formData.imageUrl || '',
       tipo: isPizza ? 'PIZZA' : 'BEBIDA'
     };
 
@@ -182,10 +182,10 @@ const ProductRegister = () => {
       if (isPizza) {
         // Mapeia o valor de tamanho do front para o valor esperado pelo backend
         const sizeMapping = {
-          'small': 'P',
-          'medium': 'M',
-          'large': 'G',
-          'family': 'F'
+          'small': 'PEQUENA',
+          'medium': 'MEDIA',
+          'large': 'GRANDE',
+          'family': 'FAMILIA'
         };
         
         await productService.createPizza({

@@ -52,6 +52,7 @@ const getProductById = async (id) => {
 // Criar um produto
 const createProduct = async (productData) => {
   try {
+    console.log(productData)
     const response = await fetch(`${API_URL}/produto/create`, {
       method: 'POST',
       headers: {
@@ -125,6 +126,7 @@ const deleteProduct = async (id) => {
 // Criar uma pizza
 const createPizza = async (pizzaData) => {
   try {
+    console.log(pizzaData)
     const response = await fetch(`${API_URL}/pizza/create`, {
       method: 'POST',
       headers: {

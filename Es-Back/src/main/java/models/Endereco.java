@@ -8,17 +8,27 @@ public class Endereco {
 	private String bairro;
 	private Integer numero;
 	private String complemento;
+	private Integer user;
 	
 	public Endereco() {
 	}
 
-	public Endereco(Integer id, String rua, String bairro, Integer numero, String complemento, String cep) {
+	public Integer getUser() {
+		return user;
+	}
+
+	public void setUser(Integer user) {
+		this.user = user;
+	}
+
+	public Endereco(Integer id, String rua, String bairro, Integer numero, String complemento, String cep, int user) {
 		this.id = id;
 		this.rua = rua;
 		this.bairro = bairro;
 		this.numero = numero;
 		this.complemento = complemento;
 		this.cep = cep;
+		this.user = user;
 	}
 
 	public String getCep() {

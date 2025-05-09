@@ -15,7 +15,7 @@ public class PagamentoDAO {
     public boolean create(Pagamento pagamento) {
     String sql = "INSERT INTO Pagamento (tipo_pagamento, horario, valor) VALUES (?, ?, ?)";
     try (Connection conn = DatabaseConnection.connect();
-         PreparedStatement stmt = conn.prepareStatement(sql)) {
+         PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
         // Validando e preenchendo os parâmetros
         stmt.setString(1, pagamento.getTipoPagamento().name());
@@ -29,6 +29,15 @@ public class PagamentoDAO {
         stmt.setDouble(3, pagamento.getValor());
 
         stmt.executeUpdate();
+        // Obter ID gerado
+        try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+            if (generatedKeys.next()) {
+                pagamento.setId(generatedKeys.getInt(1)); // Aqui você atribui o ID ao objeto
+            } else {
+                return false;
+            }
+        }
+
         return true;
 
     } catch (Exception e) {

@@ -15,15 +15,6 @@ public class CreateDatabase {
             
             Statement stmt = conn.createStatement();
 
-            String sqlEndereco = "CREATE TABLE IF NOT EXISTS Endereco (" +
-            "id INTEGER PRIMARY KEY AUTO_INCREMENT," +
-            "rua VARCHAR(40)," +
-            "bairro VARCHAR(20)," +
-            "numero INTEGER," +
-            "complemento VARCHAR(100)," + 
-            "cep VARCHAR(9) UNIQUE)";
-    stmt.execute(sqlEndereco);
-
     String sqlUsers = "CREATE TABLE IF NOT EXISTS users (" +
             "id INTEGER PRIMARY KEY AUTO_INCREMENT," +
             "email VARCHAR(100)," +
@@ -31,9 +22,20 @@ public class CreateDatabase {
             "phone_number VARCHAR(20)," +
             "cpf VARCHAR(15) UNIQUE," +
             "endereco_id INTEGER," +
-            "nome VARCHAR(60)," + 
-            "FOREIGN KEY (endereco_id) REFERENCES Endereco(id) ON DELETE SET NULL)";
+            "nome VARCHAR(60)" + 
+            ")";
     stmt.execute(sqlUsers);
+
+    String sqlEndereco = "CREATE TABLE IF NOT EXISTS Endereco (" +
+            "id INTEGER PRIMARY KEY AUTO_INCREMENT," +
+            "rua VARCHAR(40)," +
+            "bairro VARCHAR(20)," +
+            "numero INTEGER," +
+            "complemento VARCHAR(100)," + 
+            "cep VARCHAR(9)," + 
+            "user_id INTEGER," +
+            "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL)";
+    stmt.execute(sqlEndereco);
 
     String sqlProduto = "CREATE TABLE IF NOT EXISTS Produto (" +
             "id INTEGER PRIMARY KEY AUTO_INCREMENT," +
@@ -84,12 +86,7 @@ public class CreateDatabase {
             "FOREIGN KEY (produto_id) REFERENCES Produto(id) ON DELETE CASCADE)";
     stmt.execute(sqlPedidoItem);
 
-            System.out.println("Tabelas criadas com sucesso!");
-
-
-            // Endereço
-            stmt.executeUpdate("INSERT INTO Endereco (rua, bairro, numero, complemento, cep) VALUES " +
-                               "('Rua das Flores', 'Centro', 123, 'Apto 101', '32425-556')");
+            System.out.println("Tabelas criadas com sucesso!");    
 
             // Produto (1 pizza, 1 bebida)
             stmt.executeUpdate("INSERT INTO Produto (preco, nome, observacao, tipo, url) VALUES " +
@@ -101,10 +98,17 @@ public class CreateDatabase {
             stmt.executeUpdate("INSERT INTO Bebida (id_produto, tamanho) VALUES (2, 'M')");
 
             // Usuário
-            stmt.executeUpdate("INSERT INTO users (email, password, phone_number, cpf, endereco_id, nome) VALUES " +
-                               "('joao@email.com', '123456', '11999999999', '123456789123', 1, 'joao')");
-            stmt.executeUpdate("INSERT INTO users (email, password, phone_number, cpf, endereco_id, nome) VALUES " +
-                               "('paulo@gmail.com', '123456', '11999999999', '25943588787', 1, 'paulo')");
+            stmt.executeUpdate("INSERT INTO users (email, password, phone_number, cpf, nome) VALUES " +
+                               "('joao@email.com', '123456', '11999999999', '123456789123', 'joao')");
+            stmt.executeUpdate("INSERT INTO users (email, password, phone_number, cpf, nome) VALUES " +
+                               "('paulo@gmail.com', '123456', '11999999999', '25943588787', 'paulo')");
+            // Endereço
+            stmt.executeUpdate("INSERT INTO Endereco (rua, bairro, numero, complemento, cep, user_id) VALUES " +
+                               "('Rua das Flores', 'Centro', 123, 'Apto 101', '32425-556', 1)");
+            stmt.executeUpdate("INSERT INTO Endereco (rua, bairro, numero, complemento, cep, user_id) VALUES " +
+                               "('Rua dos Peixes', 'Centro', 123, 'Apto 101', '13131-000', 1)");
+            stmt.executeUpdate("INSERT INTO Endereco (rua, bairro, numero, complemento, cep, user_id) VALUES " +
+                               "('Rua dos Peixes', 'Centro', 123, 'Apto 101', '13131-000', 2)");
 
             // Pagamento
             stmt.executeUpdate("INSERT INTO Pagamento (tipo_pagamento, horario, valor) VALUES " +

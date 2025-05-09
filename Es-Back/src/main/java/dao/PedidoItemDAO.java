@@ -12,11 +12,18 @@ public class PedidoItemDAO {
     public boolean create(Pedido_item item) {
         String sql = "INSERT INTO Pedido_item (pedido_id, produto_id, quantidade) VALUES (?, ?, ?)";
         try (Connection conn = DatabaseConnection.connect();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql,  Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, item.getPedido_id());
             stmt.setInt(2, item.getProduto_id());
             stmt.setInt(3, item.getQuantidade());
             stmt.executeUpdate();
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+            if (generatedKeys.next()) {
+                item.setId(generatedKeys.getInt(1)); // Aqui você atribui o ID ao objeto
+            } else {
+                return false;
+            }
+        }
             return true;
         } catch (SQLException e) {
             e.printStackTrace();

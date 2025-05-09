@@ -16,7 +16,7 @@ const createOrder = async (orderData) => {
       endereco_id: orderData.addressId,
       pagamento_id: orderData.paymentId || null
     };
-
+    console.log(pedidoData)
     const response = await fetch(`${API_URL}/pedido/create`, {
       method: 'POST',
       headers: {
@@ -82,7 +82,7 @@ const createPayment = async (paymentData) => {
   try {
     const now = new Date();
 const pagamentoData = {
-  tipo_pagamento: paymentData.paymentMethod.toUpperCase(),
+  tipoPagamento: paymentData.paymentMethod.toUpperCase(),
   valor: paymentData.amount,
   horario: now.toISOString().slice(0, 19) // "2025-05-09T14:31:45"
 };
@@ -103,6 +103,7 @@ console.log(pagamentoData)
     }
     
     const data = await response.json();
+    console.log(data)
     return data;
   } catch (error) {
     console.error('Erro ao criar pagamento:', error);
@@ -175,12 +176,13 @@ const getAllOrders = async () => {
 // Processo completo de criação de pedido
 const processCompleteOrder = async (orderData) => {
   try {
+    console.log(orderData)
     // 1. Criar o pagamento
     const paymentResponse = await createPayment({
       paymentMethod: orderData.paymentMethod,
       amount: orderData.totalAmount
     });
-    
+    console.log(paymentResponse)
     // Verificar se o pagamento foi criado com sucesso e extrair o ID
     if (!paymentResponse || !paymentResponse.id) {
       throw new Error('Falha ao criar pagamento, ID não retornado');

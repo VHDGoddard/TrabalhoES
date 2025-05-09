@@ -15,7 +15,6 @@ public class User {
 	private String phone_number;
 	private String cpf;
 	private String nome;
-	private int endereco;
 
 
 
@@ -73,14 +72,6 @@ public class User {
 		this.cpf = cpf;
 	}
 
-	public int getEndereco() {
-		return endereco;
-	}
-
-	public void setEndereco(int endereco) {
-		this.endereco = endereco;
-	}
-
 	public boolean login(String email, String password) {
 
 		String sql = "SELECT id, email, password, phone_number, cpf, password FROM users WHERE email = ?";
@@ -103,7 +94,7 @@ public class User {
 					this.password = storedPassword;
 					this.phone_number = rs.getString("phone_number");
 					this.cpf = rs.getString("cpf");
-
+					
 					return true;
 				}
 			}

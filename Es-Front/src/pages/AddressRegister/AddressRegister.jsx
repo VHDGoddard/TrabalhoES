@@ -221,11 +221,9 @@ const AddressRegister = () => {
         numero: parseInt(formData.number, 10),
         complemento: formData.complement || '',
         bairro: formData.neighborhood,
-        cidade: formData.city,
-        estado: formData.state,
-        cep: formData.cep.replace('-', ''),
+        cep: formData.cep,
         referencia: formData.reference || '',
-        user_id: userId
+        user: userId
       };
       
       // Enviar dados para a API

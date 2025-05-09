@@ -14,11 +14,18 @@ public class PedidoDAO {
     public boolean create(Pedido pedido) {
         String sql = "INSERT INTO Pedido (user_id, endereco_id, pagamento_id) VALUES (?, ?, ?)";
         try (Connection conn = DatabaseConnection.connect();
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, pedido.getUser_id());
             stmt.setInt(2, pedido.getEndereco_id());
             stmt.setInt(3, pedido.getPagamento_id());
             stmt.executeUpdate();
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+            if (generatedKeys.next()) {
+                pedido.setId(generatedKeys.getInt(1)); // Aqui você atribui o ID ao objeto
+            } else {
+                return false;
+            }
+        }
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
