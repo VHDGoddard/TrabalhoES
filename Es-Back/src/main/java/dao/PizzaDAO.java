@@ -57,7 +57,6 @@ public class PizzaDAO {
                 PreparedStatement stmt = conn.prepareStatement(sql);
                 ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
-                System.out.println(rs.getString("tamanho").charAt(0));
                 Pizza produto = new Pizza(rs.getInt("id"),
                 rs.getInt("id_produto"),
                 Tamanho.valueOf(rs.getString("tamanho").toUpperCase()));

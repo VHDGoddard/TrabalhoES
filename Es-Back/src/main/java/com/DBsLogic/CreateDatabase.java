@@ -94,7 +94,7 @@ public class CreateDatabase {
                                "(8.50, 'Coca-Cola', 'Gelada', 'BEBIDA')");
 
             // Pizza e Bebida
-            stmt.executeUpdate("INSERT INTO Pizza (id_produto, tamanho) VALUES (1, 'GIGANTE')");
+            stmt.executeUpdate("INSERT INTO Pizza (id_produto, tamanho) VALUES (1, 'FAMILIA')");
             stmt.executeUpdate("INSERT INTO Bebida (id_produto, tamanho) VALUES (2, 'M')");
 
             // Usuário

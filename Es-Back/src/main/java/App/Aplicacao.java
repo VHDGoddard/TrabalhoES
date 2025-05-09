@@ -22,8 +22,8 @@ import java.time.format.DateTimeFormatter;
 public class Aplicacao {
     public static void main(String[] args) throws Exception {
 
-        // CreateDatabase dataBase = new CreateDatabase();
-        // dataBase.create();
+         CreateDatabase dataBase = new CreateDatabase();
+        dataBase.create();
 
         port(4567); // Define a porta da API (http://localhost:4567)
 

@@ -5,5 +5,5 @@ public enum Tamanho {
     PEQUENA,
     MEDIA,
     GRANDE,
-    GIGANTE;
+    FAMILIA;
 }
