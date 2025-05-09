@@ -1,0 +1,35 @@
+.address-register-container {
+  padding-top: 2rem;
+  padding-bottom: 4rem;
+  min-height: calc(100vh - 64px - 200px); /* Account for header and footer */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.address-register-paper {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.address-register-title {
+  font-weight: 600;
+}
+
+.address-register-actions {
+  margin-top: 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .address-register-container {
+    padding-top: 1rem;
+    padding-bottom: 2rem;
+  }
+  
+  .address-register-actions {
+    display: flex;
+    flex-direction: column;
+  }
+}

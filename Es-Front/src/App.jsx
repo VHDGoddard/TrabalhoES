@@ -10,6 +10,7 @@ import ProductRegister from './pages/ProductRegister/ProductRegister.jsx';
 import OrderPage from './pages/OrderPage/OrderPage.jsx';
 import PaymentPage from './pages/PaymentPage/PaymentPage.jsx';
 import NotFoundPage from './pages/NotFoundPage/NotFoundPage.jsx';
+import LoginPage from './pages/LoginPage/LoginPage.jsx';
 
 // Componentes
 import Navbar from './components/Navbar/Navbar.jsx';
@@ -125,6 +126,14 @@ function App() {
                   <PaymentPage />
                 </motion.div>
               }
+            />
+            <Route
+              path="/login"
+              element={<LoginPage initialMode="login" />}
+            />
+            <Route
+              path="/register"
+              element={<LoginPage initialMode="register" />}
             />
             <Route
               path="*"
