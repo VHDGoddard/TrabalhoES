@@ -3,15 +3,16 @@ package models;
 import models.enums.Tipo;
 
 public class Produto {
-	
+
 	private Integer id;
 	private Double preco;
 	private String nome;
 	private String observacao;
+	private String Url;
 	private Tipo tipo;
-	
+
 	public Produto() {
-		
+
 	}
 
 	public Produto(Integer id, Double preco, String nome, String observacao, Tipo tipo) {
@@ -20,6 +21,14 @@ public class Produto {
 		this.nome = nome;
 		this.observacao = observacao;
 		this.tipo = tipo;
+	}
+
+	public String getUrl() {
+		return Url;
+	}
+
+	public void setUrl(String url) {
+		Url = url;
 	}
 
 	public Integer getId() {
@@ -61,6 +70,5 @@ public class Produto {
 	public void setTipo(Tipo tipo) {
 		this.tipo = tipo;
 	}
-	
-	
+
 }

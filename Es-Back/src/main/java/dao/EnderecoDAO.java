@@ -10,13 +10,14 @@ import models.Endereco;
 public class EnderecoDAO {
 
     public boolean create(Endereco endereco) {
-        String sql = "INSERT INTO Endereco (rua, bairro, numero, complemento) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO Endereco (rua, bairro, numero, complemento, cep) VALUES (?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.connect();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, endereco.getRua());
             stmt.setString(2, endereco.getBairro());
             stmt.setInt(3, endereco.getNumero());
             stmt.setString(4, endereco.getComplemento());
+            stmt.setString(5, endereco.getCep());
             stmt.executeUpdate();
             return true;
         } catch (SQLException e) {
@@ -69,14 +70,15 @@ public class EnderecoDAO {
     }
 
     public boolean update(Endereco endereco) {
-        String sql = "UPDATE Endereco SET rua = ?, bairro = ?, numero = ?, complemento = ? WHERE id = ?";
+        String sql = "UPDATE Endereco SET rua = ?, bairro = ?, numero = ?, complemento = ?, cep = ? WHERE id = ?";
         try (Connection conn = DatabaseConnection.connect();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, endereco.getRua());
             stmt.setString(2, endereco.getBairro());
             stmt.setInt(3, endereco.getNumero());
             stmt.setString(4, endereco.getComplemento());
-            stmt.setInt(5, endereco.getId());
+            stmt.setString(5, endereco.getCep());
+            stmt.setInt(6, endereco.getId());
             stmt.executeUpdate();
             return true;
         } catch (SQLException e) {

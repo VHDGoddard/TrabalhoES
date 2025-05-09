@@ -3,6 +3,7 @@ package models;
 public class Endereco {
 
 	private Integer id;
+	private String cep;
 	private String rua;
 	private String bairro;
 	private Integer numero;
@@ -17,6 +18,14 @@ public class Endereco {
 		this.bairro = bairro;
 		this.numero = numero;
 		this.complemento = complemento;
+	}
+
+	public String getCep() {
+		return cep;
+	}
+
+	public void setCep(String cep) {
+		this.cep = cep;
 	}
 
 	public Integer getId() {

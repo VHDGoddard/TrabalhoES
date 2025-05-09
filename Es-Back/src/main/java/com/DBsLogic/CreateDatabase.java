@@ -20,7 +20,8 @@ public class CreateDatabase {
             "rua VARCHAR(40)," +
             "bairro VARCHAR(20)," +
             "numero INTEGER," +
-            "complemento VARCHAR(100))";
+            "complemento VARCHAR(100)" + 
+            "cep VARCHAR(9) UNIQUE)";
     stmt.execute(sqlEndereco);
 
     String sqlUsers = "CREATE TABLE IF NOT EXISTS users (" +
@@ -38,7 +39,8 @@ public class CreateDatabase {
             "preco DECIMAL(10, 2)," +
             "nome VARCHAR(100)," +
             "observacao VARCHAR(255)," +
-            "tipo VARCHAR(50))";
+            "tipo VARCHAR(50)" + 
+            "url VARCHAR(200))";
     stmt.execute(sqlProduto);
 
     String sqlPizza = "CREATE TABLE IF NOT EXISTS Pizza (" +
@@ -85,13 +87,13 @@ public class CreateDatabase {
 
 
             // Endereço
-            stmt.executeUpdate("INSERT INTO Endereco (rua, bairro, numero, complemento) VALUES " +
-                               "('Rua das Flores', 'Centro', 123, 'Apto 101')");
+            stmt.executeUpdate("INSERT INTO Endereco (rua, bairro, numero, complemento, cep) VALUES " +
+                               "('Rua das Flores', 'Centro', 123, 'Apto 101', 32425-556)");
 
             // Produto (1 pizza, 1 bebida)
-            stmt.executeUpdate("INSERT INTO Produto (preco, nome, observacao, tipo) VALUES " +
-                               "(39.90, 'Pizza Margherita', 'Sem borda', 'PIZZA')," +
-                               "(8.50, 'Coca-Cola', 'Gelada', 'BEBIDA')");
+            stmt.executeUpdate("INSERT INTO Produto (preco, nome, observacao, tipo, url) VALUES " +
+                               "(39.90, 'Pizza Margherita', 'Sem borda', 'PIZZA', https://a.espncdn.com/combiner/i?img=/i/headshots/nba/players/full/1966.png&w=350&h=254)," +
+                               "(8.50, 'Coca-Cola', 'Gelada', 'BEBIDA', https://i.ytimg.com/vi/y59-J0Q9v2o/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLAYMziFRmjOpm7cOQmt_3Wu6c2JpA)");
 
             // Pizza e Bebida
             stmt.executeUpdate("INSERT INTO Pizza (id_produto, tamanho) VALUES (1, 'FAMILIA')");
