@@ -36,15 +36,15 @@ const register = async (userData) => {
   try {
     // Adaptar o formato dos dados para o formato esperado pelo backend
     const apiData = {
-      name: userData.name,
+      nome: userData.name,
       email: userData.email, 
       password: userData.password,
       // Outros dados que seriam necessários para o cadastro de User
       cpf: userData.cpf,
-      phone: userData.phone
+      phone_number: userData.phone
     };
 
-    const response = await fetch(`${API_URL}/users/register`, {
+    const response = await fetch(`${API_URL}/users/create`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

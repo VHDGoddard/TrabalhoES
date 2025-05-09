@@ -80,11 +80,13 @@ const addOrderItems = async (orderId, items) => {
 // Criar um pagamento
 const createPayment = async (paymentData) => {
   try {
-    const pagamentoData = {
-      tipo_pagamento: paymentData.paymentMethod.toUpperCase(),
-      valor: paymentData.amount,
-      horario: new Date().toISOString()
-    };
+    const now = new Date();
+const pagamentoData = {
+  tipo_pagamento: paymentData.paymentMethod.toUpperCase(),
+  valor: paymentData.amount,
+  horario: now.toISOString().slice(0, 19) // "2025-05-09T14:31:45"
+};
+console.log(pagamentoData)
     
     const response = await fetch(`${API_URL}/pagamento/create`, {
       method: 'POST',

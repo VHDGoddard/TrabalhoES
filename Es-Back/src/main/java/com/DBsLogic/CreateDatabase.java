@@ -89,12 +89,12 @@ public class CreateDatabase {
 
             // Endereço
             stmt.executeUpdate("INSERT INTO Endereco (rua, bairro, numero, complemento, cep) VALUES " +
-                               "('Rua das Flores', 'Centro', 123, 'Apto 101', 32425-556)");
+                               "('Rua das Flores', 'Centro', 123, 'Apto 101', '32425-556')");
 
             // Produto (1 pizza, 1 bebida)
             stmt.executeUpdate("INSERT INTO Produto (preco, nome, observacao, tipo, url) VALUES " +
-                               "(39.90, 'Pizza Margherita', 'Sem borda', 'PIZZA', https://a.espncdn.com/combiner/i?img=/i/headshots/nba/players/full/1966.png&w=350&h=254)," +
-                               "(8.50, 'Coca-Cola', 'Gelada', 'BEBIDA', https://i.ytimg.com/vi/y59-J0Q9v2o/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLAYMziFRmjOpm7cOQmt_3Wu6c2JpA)");
+                               "(39.90, 'Pizza Margherita', 'Sem borda', 'PIZZA', 'https://a.espncdn.com/combiner/i?img=/i/headshots/nba/players/full/1966.png&w=350&h=254')," +
+                               "(8.50, 'Coca-Cola', 'Gelada', 'BEBIDA', 'https://i.ytimg.com/vi/y59-J0Q9v2o/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLAYMziFRmjOpm7cOQmt_3Wu6c2JpA')");
 
             // Pizza e Bebida
             stmt.executeUpdate("INSERT INTO Pizza (id_produto, tamanho) VALUES (1, 'FAMILIA')");
@@ -102,9 +102,9 @@ public class CreateDatabase {
 
             // Usuário
             stmt.executeUpdate("INSERT INTO users (email, password, phone_number, cpf, endereco_id, nome) VALUES " +
-                               "('joao@email.com', '123456', '11999999999', '123456789123', 1, joao)");
+                               "('joao@email.com', '123456', '11999999999', '123456789123', 1, 'joao')");
             stmt.executeUpdate("INSERT INTO users (email, password, phone_number, cpf, endereco_id, nome) VALUES " +
-                               "('paulo@gmail.com', '123456', '11999999999', '25943588787', 1, paulo)");
+                               "('paulo@gmail.com', '123456', '11999999999', '25943588787', 1, 'paulo')");
 
             // Pagamento
             stmt.executeUpdate("INSERT INTO Pagamento (tipo_pagamento, horario, valor) VALUES " +
