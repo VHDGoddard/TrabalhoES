@@ -17,6 +17,8 @@ import {
 } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
+import addressService from '../../services/addressService';
+import authService from '../../services/authService';
 import './AddressRegister.css';
 
 const AddressRegister = () => {
@@ -154,33 +156,29 @@ const AddressRegister = () => {
   };
 
   const fetchAddressByCEP = async (cep) => {
-    // Remove non-numeric characters for API call
-    const cepNumbers = cep.replace(/\D/g, '');
-    
     setFetchingCep(true);
     
     try {
-      const response = await fetch(`https://viacep.com.br/ws/${cepNumbers}/json/`);
-      const data = await response.json();
+      const addressData = await addressService.getAddressByCEP(cep);
       
-      if (!data.erro) {
-        setFormData(prev => ({
-          ...prev,
-          street: data.logradouro || prev.street,
-          neighborhood: data.bairro || prev.neighborhood,
-          city: data.localidade || prev.city,
-          state: data.uf || prev.state
-        }));
-      } else {
-        setErrors(prev => ({
-          ...prev,
-          cep: 'CEP não encontrado'
-        }));
-      }
+      setFormData(prev => ({
+        ...prev,
+        street: addressData.street || prev.street,
+        neighborhood: addressData.neighborhood || prev.neighborhood,
+        city: addressData.city || prev.city,
+        state: addressData.state || prev.state
+      }));
+      
     } catch (error) {
+      console.error('Erro ao buscar CEP:', error);
+      setErrors(prev => ({
+        ...prev,
+        cep: 'CEP não encontrado ou inválido'
+      }));
+      
       setSnackbar({
         open: true,
-        message: 'Erro ao buscar endereço. Tente novamente.',
+        message: 'Erro ao buscar endereço. Verifique o CEP informado.',
         severity: 'error'
       });
     } finally {
@@ -198,8 +196,40 @@ const AddressRegister = () => {
     setLoading(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Verificar se o usuário está autenticado
+      if (!authService.isAuthenticated()) {
+        setSnackbar({
+          open: true,
+          message: 'Você precisa estar logado para cadastrar um endereço.',
+          severity: 'warning'
+        });
+        setTimeout(() => navigate('/login'), 2000);
+        return;
+      }
+      
+      // Obter ID do usuário atual
+      const currentUser = authService.getCurrentUser();
+      const userId = currentUser?.id || null;
+      
+      if (!userId) {
+        throw new Error('ID de usuário não encontrado');
+      }
+      
+      // Preparar dados para a API
+      const addressData = {
+        rua: formData.street,
+        numero: parseInt(formData.number, 10),
+        complemento: formData.complement || '',
+        bairro: formData.neighborhood,
+        cidade: formData.city,
+        estado: formData.state,
+        cep: formData.cep.replace('-', ''),
+        referencia: formData.reference || '',
+        user_id: userId
+      };
+      
+      // Enviar dados para a API
+      const response = await addressService.createAddress(addressData);
       
       // Show success message
       setSnackbar({
@@ -214,9 +244,10 @@ const AddressRegister = () => {
       }, 1500);
       
     } catch (error) {
+      console.error('Erro ao cadastrar endereço:', error);
       setSnackbar({
         open: true,
-        message: 'Erro ao cadastrar endereço. Tente novamente.',
+        message: `Erro ao cadastrar endereço: ${error.message || 'Tente novamente'}`,
         severity: 'error'
       });
     } finally {

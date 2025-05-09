@@ -19,6 +19,8 @@ const AuthForm = ({ mode = 'register', onModeChange, onSubmit }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    cpf: '',
+    phone: '',
     password: '',
     confirmPassword: ''
   });
@@ -45,13 +47,59 @@ const AuthForm = ({ mode = 'register', onModeChange, onSubmit }) => {
     setShowConfirmPassword(!showConfirmPassword);
   };
 
+  const formatCPF = (value) => {
+    // Remove non-numeric characters
+    const numericValue = value.replace(/\D/g, '');
+    
+    // Format as CPF: 000.000.000-00
+    if (numericValue.length <= 3) {
+      return numericValue;
+    } else if (numericValue.length <= 6) {
+      return `${numericValue.slice(0, 3)}.${numericValue.slice(3)}`;
+    } else if (numericValue.length <= 9) {
+      return `${numericValue.slice(0, 3)}.${numericValue.slice(3, 6)}.${numericValue.slice(6)}`;
+    } else {
+      return `${numericValue.slice(0, 3)}.${numericValue.slice(3, 6)}.${numericValue.slice(6, 9)}-${numericValue.slice(9, 11)}`;
+    }
+  };
+
+  const formatPhone = (value) => {
+    // Remove non-numeric characters
+    const numericValue = value.replace(/\D/g, '');
+    
+    // Format as phone: (00) 00000-0000
+    if (numericValue.length <= 2) {
+      return numericValue.length ? `(${numericValue}` : '';
+    } else if (numericValue.length <= 7) {
+      return `(${numericValue.slice(0, 2)}) ${numericValue.slice(2)}`;
+    } else {
+      return `(${numericValue.slice(0, 2)}) ${numericValue.slice(2, 7)}-${numericValue.slice(7, 11)}`;
+    }
+  };
+
+  const handleCPFChange = (e) => {
+    const formattedValue = formatCPF(e.target.value);
+    setFormData(prev => ({
+      ...prev,
+      cpf: formattedValue
+    }));
+  };
+
+  const handlePhoneChange = (e) => {
+    const formattedValue = formatPhone(e.target.value);
+    setFormData(prev => ({
+      ...prev,
+      phone: formattedValue
+    }));
+  };
+
   const validateForm = () => {
     if (isLoginMode) {
       if (!formData.email || !formData.password) {
         return 'Please fill in all fields';
       }
     } else {
-      if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
+      if (!formData.name || !formData.email || !formData.cpf || !formData.phone || !formData.password || !formData.confirmPassword) {
         return 'Please fill in all fields';
       }
       if (formData.password !== formData.confirmPassword) {
@@ -63,6 +111,18 @@ const AuthForm = ({ mode = 'register', onModeChange, onSubmit }) => {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(formData.email)) {
         return 'Please enter a valid email address';
+      }
+      
+      // CPF validation
+      const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
+      if (!cpfRegex.test(formData.cpf)) {
+        return 'Please enter a valid CPF (format: 000.000.000-00)';
+      }
+      
+      // Phone validation
+      const phoneRegex = /^\(\d{2}\) \d{5}-\d{4}$/;
+      if (!phoneRegex.test(formData.phone)) {
+        return 'Please enter a valid phone number (format: (00) 00000-0000)';
       }
     }
     return '';
@@ -135,6 +195,36 @@ const AuthForm = ({ mode = 'register', onModeChange, onSubmit }) => {
               value={formData.email}
               onChange={handleChange}
             />
+            
+            {!isLoginMode && (
+              <>
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="cpf"
+                  label="CPF"
+                  name="cpf"
+                  value={formData.cpf}
+                  onChange={handleCPFChange}
+                  inputProps={{ maxLength: 14 }}
+                  placeholder="000.000.000-00"
+                />
+                
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="phone"
+                  label="Phone"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handlePhoneChange}
+                  inputProps={{ maxLength: 15 }}
+                  placeholder="(00) 00000-0000"
+                />
+              </>
+            )}
             
             <TextField
               margin="normal"

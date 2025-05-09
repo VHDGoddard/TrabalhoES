@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -25,6 +25,9 @@ import {
 } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import orderService from '../../services/orderService';
+import addressService from '../../services/addressService';
+import authService from '../../services/authService';
 
 const PaymentPage = () => {
   const navigate = useNavigate();
@@ -38,6 +41,45 @@ const PaymentPage = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
+  const [orderData, setOrderData] = useState(null);
+  const [address, setAddress] = useState(null);
+  const [loadingAddress, setLoadingAddress] = useState(true);
+
+  // Carregar dados do pedido da sessão
+  useEffect(() => {
+    const currentOrder = sessionStorage.getItem('currentOrder');
+    
+    if (!currentOrder) {
+      navigate('/realizar-pedido');
+      return;
+    }
+    
+    try {
+      const parsedOrder = JSON.parse(currentOrder);
+      setOrderData(parsedOrder);
+      
+      // Carregar detalhes do endereço selecionado
+      if (parsedOrder.addressId) {
+        loadAddressDetails(parsedOrder.addressId);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar dados do pedido:', error);
+      setError('Erro ao carregar dados do pedido. Volte e tente novamente.');
+    }
+  }, []);
+
+  const loadAddressDetails = async (addressId) => {
+    setLoadingAddress(true);
+    try {
+      const addressData = await addressService.getAddressById(addressId);
+      setAddress(addressData);
+    } catch (error) {
+      console.error('Erro ao carregar endereço:', error);
+      // Caso não consiga carregar o endereço, deixar em branco
+    } finally {
+      setLoadingAddress(false);
+    }
+  };
 
   const handleCardChange = (e) => {
     const { name, value } = e.target;
@@ -47,26 +89,87 @@ const PaymentPage = () => {
     }));
   };
 
-  const handleSubmit = () => {
-    if (paymentMethod === 'credit' && 
-        (!cardData.number || !cardData.name || !cardData.expiry || !cardData.cvv)) {
-      setError('Preencha todos os dados do cartão');
+  const validatePaymentInfo = () => {
+    if (paymentMethod === 'credit') {
+      if (!cardData.number || cardData.number.replace(/\s/g, '').length < 16) {
+        return 'Número do cartão inválido';
+      }
+      if (!cardData.name) {
+        return 'Nome no cartão é obrigatório';
+      }
+      if (!cardData.expiry || cardData.expiry.length < 5) {
+        return 'Data de validade inválida';
+      }
+      if (!cardData.cvv || cardData.cvv.length < 3) {
+        return 'Código de segurança inválido';
+      }
+    }
+    return null;
+  };
+
+  const handleSubmit = async () => {
+    // Validar informações de pagamento
+    const validationError = validatePaymentInfo();
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
+    // Verificar se tem dados do pedido
+    if (!orderData || !orderData.items || orderData.items.length === 0) {
+      setError('Dados do pedido inválidos. Volte e tente novamente.');
       return;
     }
 
     setLoading(true);
     setError(null);
     
-    // Simulação de processamento de pagamento
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      // Verificar se o usuário está autenticado
+      if (!authService.isAuthenticated()) {
+        // Redirecionar para login
+        navigate('/login', { 
+          state: { from: '/realizar-pagamento' }
+        });
+        return;
+      }
+
+      // Mapear método de pagamento para o formato esperado pelo backend
+      const paymentMethodMap = {
+        'credit': 'CREDITO',
+        'pix': 'PIX',
+        'cash': 'DINHEIRO'
+      };
+
+      // Preparar dados para o pedido
+      const completeOrderData = {
+        items: orderData.items,
+        addressId: orderData.addressId,
+        paymentMethod: paymentMethodMap[paymentMethod] || 'CREDITO',
+        totalAmount: orderData.totalAmount,
+        userId: authService.getCurrentUser()?.id
+      };
+
+      // Enviar pedido para o backend
+      const result = await orderService.processCompleteOrder(completeOrderData);
+      
+      // Se tudo ocorrer bem, mostrar tela de sucesso
       setSuccess(true);
+      
+      // Limpar dados do pedido atual da sessão
+      sessionStorage.removeItem('currentOrder');
       
       // Redirecionar após 3 segundos
       setTimeout(() => {
         navigate('/');
       }, 3000);
-    }, 2000);
+      
+    } catch (error) {
+      console.error('Erro ao processar pagamento:', error);
+      setError(`Erro ao processar pagamento: ${error.message || 'Tente novamente'}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const formatCardNumber = (value) => {
@@ -93,6 +196,16 @@ const PaymentPage = () => {
     return value;
   };
 
+  // Calcular totais do pedido
+  const calculateSubtotal = () => {
+    if (!orderData || !orderData.items) return 0;
+    return orderData.items.reduce((total, item) => total + (item.price * item.quantity), 0);
+  };
+
+  const deliveryFee = 8.00; // Taxa fixa de entrega
+  const subtotal = calculateSubtotal();
+  const total = subtotal + deliveryFee;
+
   if (success) {
     return (
       <Container maxWidth="sm" sx={{ py: 8 }}>
@@ -115,6 +228,25 @@ const PaymentPage = () => {
             <CircularProgress color="primary" sx={{ mt: 4 }} />
           </Paper>
         </motion.div>
+      </Container>
+    );
+  }
+
+  if (!orderData) {
+    return (
+      <Container maxWidth="sm" sx={{ py: 8 }}>
+        <Alert severity="warning" sx={{ mb: 3 }}>
+          Dados do pedido não encontrados. Volte e faça seu pedido novamente.
+        </Alert>
+        <Button
+          component={Link}
+          to="/realizar-pedido"
+          variant="contained"
+          color="primary"
+          fullWidth
+        >
+          Voltar para fazer o pedido
+        </Button>
       </Container>
     );
   }
@@ -176,10 +308,10 @@ const PaymentPage = () => {
                           fullWidth
                           label="Número do Cartão"
                           name="number"
-                          value={formatCardNumber(cardData.number)}
+                          value={cardData.number}
                           onChange={(e) => {
                             const formatted = formatCardNumber(e.target.value);
-                            setCardData({...cardData, number: formatted.replace(/\s/g, '')});
+                            setCardData(prev => ({...prev, number: formatted}));
                           }}
                           inputProps={{ maxLength: 19 }}
                           sx={{ mb: 2 }}
@@ -198,10 +330,10 @@ const PaymentPage = () => {
                               fullWidth
                               label="Validade (MM/AA)"
                               name="expiry"
-                              value={formatExpiry(cardData.expiry)}
+                              value={cardData.expiry}
                               onChange={(e) => {
                                 const formatted = formatExpiry(e.target.value);
-                                setCardData({...cardData, expiry: formatted.replace(/\//g, '')});
+                                setCardData(prev => ({...prev, expiry: formatted}));
                               }}
                               inputProps={{ maxLength: 5 }}
                             />
@@ -214,7 +346,7 @@ const PaymentPage = () => {
                               value={cardData.cvv}
                               onChange={(e) => {
                                 const v = e.target.value.replace(/\D/g, '');
-                                setCardData({...cardData, cvv: v.slice(0, 4)});
+                                setCardData(prev => ({...prev, cvv: v.slice(0, 4)}));
                               }}
                               inputProps={{ maxLength: 4 }}
                             />
@@ -293,29 +425,29 @@ const PaymentPage = () => {
                 Itens do Pedido
               </Typography>
               <Box sx={{ mb: 2 }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Typography>Pizza Margherita</Typography>
-                  <Typography>R$ 45.90</Typography>
-                </Box>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Typography>Pizza Pepperoni</Typography>
-                  <Typography>R$ 52.90</Typography>
-                </Box>
+                {orderData && orderData.items && orderData.items.map((item, index) => (
+                  <Box key={index} sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                    <Typography>
+                      {item.name} x {item.quantity}
+                    </Typography>
+                    <Typography>R$ {(item.price * item.quantity).toFixed(2)}</Typography>
+                  </Box>
+                ))}
               </Box>
               <Divider sx={{ my: 2 }} />
               <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                 <Typography>Subtotal</Typography>
-                <Typography>R$ 98.80</Typography>
+                <Typography>R$ {subtotal.toFixed(2)}</Typography>
               </Box>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                 <Typography>Taxa de Entrega</Typography>
-                <Typography>R$ 8.00</Typography>
+                <Typography>R$ {deliveryFee.toFixed(2)}</Typography>
               </Box>
               <Divider sx={{ my: 2 }} />
               <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Typography variant="h6">Total</Typography>
                 <Typography variant="h6" color="primary">
-                  R$ 106.80
+                  R$ {total.toFixed(2)}
                 </Typography>
               </Box>
             </Box>
@@ -324,10 +456,19 @@ const PaymentPage = () => {
               <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 500 }}>
                 Endereço de Entrega
               </Typography>
-              <Typography>Rua das Flores, 123</Typography>
-              <Typography>Complemento: Ap 101</Typography>
-              <Typography>Bairro Centro - São Paulo/SP</Typography>
-              <Typography>CEP: 01001000</Typography>
+              {loadingAddress ? (
+                <CircularProgress size={20} />
+              ) : address ? (
+                <>
+                  <Typography>{address.rua}, {address.numero}</Typography>
+                  {address.complemento && <Typography>Complemento: {address.complemento}</Typography>}
+                  <Typography>Bairro {address.bairro} - {address.cidade}/{address.estado}</Typography>
+                  <Typography>CEP: {address.cep}</Typography>
+                  {address.referencia && <Typography>Referência: {address.referencia}</Typography>}
+                </>
+              ) : (
+                <Typography color="text.secondary">Endereço não disponível</Typography>
+              )}
             </Box>
 
             <Button

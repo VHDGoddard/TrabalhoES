@@ -7,11 +7,6 @@ import {
   Button, 
   Paper,
   Grid,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  Radio,
-  RadioGroup,
   InputAdornment,
   Snackbar,
   Alert,
@@ -19,6 +14,7 @@ import {
 } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import authService from '../../services/authService';
 import './CustomerRegister.css';
 
 const CustomerRegister = () => {
@@ -27,8 +23,8 @@ const CustomerRegister = () => {
     email: '',
     cpf: '',
     phone: '',
-    birthdate: '',
-    gender: ''
+    password: '', // Adicionando campo de senha para o registro
+    confirmPassword: '' // Confirmação de senha
   });
 
   const [errors, setErrors] = useState({});
@@ -91,22 +87,16 @@ const CustomerRegister = () => {
       newErrors.phone = 'Telefone inválido (formato: (00) 00000-0000)';
     }
     
-    // Birthdate validation
-    if (!formData.birthdate) {
-      newErrors.birthdate = 'Data de nascimento é obrigatória';
-    } else {
-      const birthDate = new Date(formData.birthdate);
-      const today = new Date();
-      const age = today.getFullYear() - birthDate.getFullYear();
-      
-      if (age < 18) {
-        newErrors.birthdate = 'Você deve ter pelo menos 18 anos';
-      }
+    // Password validation
+    if (!formData.password) {
+      newErrors.password = 'Senha é obrigatória';
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'A senha deve ter pelo menos 6 caracteres';
     }
     
-    // Gender validation
-    if (!formData.gender) {
-      newErrors.gender = 'Gênero é obrigatório';
+    // Confirm password validation
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = 'As senhas não conferem';
     }
     
     setErrors(newErrors);
@@ -169,8 +159,14 @@ const CustomerRegister = () => {
     setLoading(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Registrar usuário usando o serviço de autenticação
+      await authService.register({
+        name: formData.name,
+        email: formData.email,
+        cpf: formData.cpf,
+        phone: formData.phone,
+        password: formData.password
+      });
       
       // Show success message
       setSnackbar({
@@ -187,7 +183,7 @@ const CustomerRegister = () => {
     } catch (error) {
       setSnackbar({
         open: true,
-        message: 'Erro ao cadastrar cliente. Tente novamente.',
+        message: `Erro ao cadastrar cliente: ${error.message || 'Tente novamente'}`,
         severity: 'error'
       });
     } finally {
@@ -260,7 +256,7 @@ const CustomerRegister = () => {
                 />
               </Grid>
               
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12}>
                 <TextField
                   fullWidth
                   label="Telefone"
@@ -275,43 +271,39 @@ const CustomerRegister = () => {
                   placeholder="(00) 00000-0000"
                 />
               </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Senha"
+                  name="password"
+                  type="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  variant="outlined"
+                  required
+                  error={!!errors.password}
+                  helperText={errors.password}
+                />
+              </Grid>
               
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
-                  label="Data de Nascimento"
-                  name="birthdate"
-                  type="date"
-                  value={formData.birthdate}
+                  label="Confirmar Senha"
+                  name="confirmPassword"
+                  type="password"
+                  value={formData.confirmPassword}
                   onChange={handleChange}
                   variant="outlined"
                   required
-                  error={!!errors.birthdate}
-                  helperText={errors.birthdate}
-                  InputLabelProps={{ shrink: true }}
+                  error={!!errors.confirmPassword}
+                  helperText={errors.confirmPassword}
                 />
               </Grid>
               
-              <Grid item xs={12}>
-                <FormControl component="fieldset" error={!!errors.gender}>
-                  <FormLabel component="legend">Gênero</FormLabel>
-                  <RadioGroup
-                    row
-                    name="gender"
-                    value={formData.gender}
-                    onChange={handleChange}
-                  >
-                    <FormControlLabel value="female" control={<Radio />} label="Feminino" />
-                    <FormControlLabel value="male" control={<Radio />} label="Masculino" />
-                    <FormControlLabel value="other" control={<Radio />} label="Outro" />
-                    <FormControlLabel value="prefer-not-to-say" control={<Radio />} label="Prefiro não dizer" />
-                  </RadioGroup>
-                  {errors.gender && <Typography color="error" variant="caption">{errors.gender}</Typography>}
-                </FormControl>
-              </Grid>
-              
               <Grid item xs={12} className="customer-register-actions">
-                <Box mt={2} display="flex" justifyContent="space-between" flexWrap="wrap" gap={2}>
+                <Box display="flex" justifyContent="space-between" flexWrap="wrap" gap={2}>
                   <Button 
                     component={Link} 
                     to="/"

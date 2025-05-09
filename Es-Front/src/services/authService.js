@@ -1,5 +1,4 @@
-// API base URL - replace with your actual API endpoint
-const API_URL = "http://localhost:8080/api";
+import API_URL from './apiConfig';
 
 // Store the token in localStorage
 const setToken = (token) => {
@@ -35,29 +34,47 @@ const removeUser = () => {
 // Register a new user
 const register = async (userData) => {
   try {
+    // Adaptar o formato dos dados para o formato esperado pelo backend
+    const apiData = {
+      name: userData.name,
+      email: userData.email, 
+      password: userData.password,
+      // Outros dados que seriam necessários para o cadastro de User
+      cpf: userData.cpf,
+      phone: userData.phone
+    };
+
     const response = await fetch(`${API_URL}/users/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(userData),
+      body: JSON.stringify(apiData),
     });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Registration failed');
-    }
 
     const data = await response.json();
     
-    // Save token and user data
+    if (!response.ok) {
+      throw new Error(data.message || 'Falha no registro. Por favor, tente novamente.');
+    }
+    
+    // Salvar dados do usuário no localStorage
+    const userToSave = {
+      id: data.id || null,
+      name: userData.name,
+      email: userData.email
+    };
+    
+    setUser(userToSave);
+    
+    // Se a API retornar um token, armazená-lo
     if (data.token) {
       setToken(data.token);
-      setUser(data.user);
     }
     
     return data;
   } catch (error) {
+    console.error('Erro no registro:', error);
     throw error;
   }
 };
@@ -70,24 +87,39 @@ const login = async (credentials) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(credentials),
+      body: JSON.stringify({
+        email: credentials.email,
+        password: credentials.password
+      }),
     });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Login failed');
-    }
 
     const data = await response.json();
     
-    // Save token and user data
-    if (data.token) {
-      setToken(data.token);
-      setUser(data.user);
+    if (!response.ok) {
+      throw new Error(data.message || 'Falha no login. Verifique suas credenciais.');
     }
     
-    return data;
+    // Definir simulação de usuário baseado no email (temporário até que o backend retorne os dados corretos)
+    const user = {
+      id: data.id || Date.now(), // Usar o ID retornado ou um timestamp como fallback
+      email: credentials.email,
+      name: data.name || credentials.email.split('@')[0] // Usar o nome antes do @ como fallback
+    };
+    
+    // Salvar dados do usuário
+    setUser(user);
+    
+    // Se a API retornar um token, armazená-lo
+    if (data.token) {
+      setToken(data.token);
+    } else {
+      // Caso a API não retorne um token, criar um token simulado
+      setToken(`sim-token-${Date.now()}`);
+    }
+    
+    return { user, success: true };
   } catch (error) {
+    console.error('Erro no login:', error);
     throw error;
   }
 };
@@ -96,6 +128,9 @@ const login = async (credentials) => {
 const logout = () => {
   removeToken();
   removeUser();
+  
+  // Remover quaisquer outros dados armazenados relacionados ao usuário
+  sessionStorage.removeItem('currentOrder');
 };
 
 // Check if user is authenticated
@@ -103,13 +138,18 @@ const isAuthenticated = () => {
   return !!getToken();
 };
 
+// Get current authenticated user
+const getCurrentUser = () => {
+  return getUser();
+};
+
 const authService = {
   register,
   login,
   logout,
   getToken,
-  getUser,
   isAuthenticated,
+  getCurrentUser,
 };
 
 export default authService;

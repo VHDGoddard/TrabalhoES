@@ -23,6 +23,7 @@ import {
 } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import LocalPizzaIcon from '@mui/icons-material/LocalPizza';
+import productService from '../../services/productService';
 import './ProductRegister.css';
 
 const ProductRegister = () => {
@@ -33,11 +34,8 @@ const ProductRegister = () => {
     price: '',
     imageUrl: '',
     category: '',
-    ingredients: '',
     size: 'medium', // Only for pizzas
-    drinkType: '', // Only for drinks
-    volume: '', // Only for drinks
-    alcoholic: 'no' // Only for drinks
+    volume: 'P' // Default to P for drinks
   });
 
   const [errors, setErrors] = useState({});
@@ -67,14 +65,10 @@ const ProductRegister = () => {
     'Outro'
   ];
 
-  const drinkTypes = [
-    'Refrigerante',
-    'Suco Natural',
-    'Água',
-    'Cerveja',
-    'Vinho',
-    'Destilado',
-    'Outro'
+  const drinkVolumes = [
+    { value: 'P', label: 'Pequeno (P)' },
+    { value: 'M', label: 'Médio (M)' },
+    { value: 'G', label: 'Grande (G)' }
   ];
 
   const isPizza = formData.productType === 'pizza';
@@ -90,9 +84,7 @@ const ProductRegister = () => {
         [name]: value,
         category: '',
         size: value === 'pizza' ? 'medium' : '',
-        drinkType: '',
-        volume: '',
-        alcoholic: 'no'
+        volume: 'P'
       });
     } else if (name === 'price') {
       // Allow only numeric values with up to two decimal places
@@ -144,28 +136,22 @@ const ProductRegister = () => {
       newErrors.category = 'Categoria é obrigatória';
     }
     
-    // Pizza-specific validations
-    if (isPizza) {
-      if (!formData.ingredients.trim()) {
-        newErrors.ingredients = 'Ingredientes são obrigatórios';
-      }
-    }
-    
-    // Drink-specific validations
-    if (isDrink) {
-      if (!formData.drinkType) {
-        newErrors.drinkType = 'Tipo de bebida é obrigatório';
-      }
-      
-      if (!formData.volume.trim()) {
-        newErrors.volume = 'Volume é obrigatório';
-      } else if (!/^\d+\s*(ml|L)$/i.test(formData.volume)) {
-        newErrors.volume = 'Formato inválido. Use "ml" ou "L" (ex: 500ml, 1L)';
-      }
-    }
-    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+  };
+
+  // Converte os dados do formulário para o formato esperado pela API
+  const mapFormToApiData = () => {
+    // Dados base do produto, comuns para pizza e bebida
+    const productData = {
+      nome: formData.name,
+      preco: parseFloat(formData.price),
+      observacao: formData.description + (formData.category ? ` | Categoria: ${formData.category}` : ''),
+      url: formData.imageUrl || '',
+      tipo: isPizza ? 'PIZZA' : 'BEBIDA'
+    };
+
+    return productData;
   };
 
   const handleSubmit = async (e) => {
@@ -178,17 +164,50 @@ const ProductRegister = () => {
     setLoading(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // 1. Criar o produto base na API
+      const productData = mapFormToApiData();
+      const productResult = await productService.createProduct(productData);
       
-      // Show success message
+      // 2. Obter o ID do produto criado
+      let productId;
+      if (productResult && productResult.id) {
+        productId = productResult.id;
+      } else {
+        // Se não tiver ID na resposta, buscamos os produtos e pegamos o último
+        const products = await productService.getAllProducts();
+        productId = products[products.length - 1].id;
+      }
+      
+      // 3. Criar o tipo específico (pizza ou bebida)
+      if (isPizza) {
+        // Mapeia o valor de tamanho do front para o valor esperado pelo backend
+        const sizeMapping = {
+          'small': 'P',
+          'medium': 'M',
+          'large': 'G',
+          'family': 'F'
+        };
+        
+        await productService.createPizza({
+          id_produto: productId,
+          tamanho: sizeMapping[formData.size]
+        });
+      } else {
+        // Para bebidas
+        await productService.createDrink({
+          id_produto: productId,
+          tamanho: formData.volume
+        });
+      }
+      
+      // Mostrar mensagem de sucesso
       setSnackbar({
         open: true,
         message: 'Produto cadastrado com sucesso!',
         severity: 'success'
       });
       
-      // Reset form or redirect
+      // Resetar formulário
       setTimeout(() => {
         setFormData({
           productType: 'pizza',
@@ -197,18 +216,16 @@ const ProductRegister = () => {
           price: '',
           imageUrl: '',
           category: '',
-          ingredients: '',
           size: 'medium',
-          drinkType: '',
-          volume: '',
-          alcoholic: 'no'
+          volume: 'P'
         });
       }, 500);
       
     } catch (error) {
+      console.error('Erro ao cadastrar produto:', error);
       setSnackbar({
         open: true,
-        message: 'Erro ao cadastrar produto. Tente novamente.',
+        message: `Erro ao cadastrar produto: ${error.message || 'Tente novamente'}`,
         severity: 'error'
       });
     } finally {
@@ -298,7 +315,7 @@ const ProductRegister = () => {
                   multiline
                   rows={3}
                   error={!!errors.description}
-                  helperText={errors.description}
+                  helperText={errors.description || isPizza ? "Inclua os ingredientes na descrição" : ""}
                 />
               </Grid>
               
@@ -342,91 +359,42 @@ const ProductRegister = () => {
               </Grid>
               
               {isPizza && (
-                <>
-                  <Grid item xs={12} sm={6}>
-                    <FormControl fullWidth>
-                      <InputLabel>Tamanho</InputLabel>
-                      <Select
-                        name="size"
-                        value={formData.size}
-                        onChange={handleChange}
-                        label="Tamanho"
-                      >
-                        <MenuItem value="small">Pequena</MenuItem>
-                        <MenuItem value="medium">Média</MenuItem>
-                        <MenuItem value="large">Grande</MenuItem>
-                        <MenuItem value="family">Família</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                  
-                  <Grid item xs={12}>
-                    <TextField
-                      fullWidth
-                      label="Ingredientes"
-                      name="ingredients"
-                      value={formData.ingredients}
+                <Grid item xs={12} sm={6}>
+                  <FormControl fullWidth>
+                    <InputLabel>Tamanho</InputLabel>
+                    <Select
+                      name="size"
+                      value={formData.size}
                       onChange={handleChange}
-                      variant="outlined"
-                      required
-                      multiline
-                      rows={2}
-                      error={!!errors.ingredients}
-                      helperText={errors.ingredients || "Separe os ingredientes por vírgula"}
-                      placeholder="Queijo, molho de tomate, calabresa, cebola..."
-                    />
-                  </Grid>
-                </>
+                      label="Tamanho"
+                    >
+                      <MenuItem value="small">Pequena</MenuItem>
+                      <MenuItem value="medium">Média</MenuItem>
+                      <MenuItem value="large">Grande</MenuItem>
+                      <MenuItem value="family">Família</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
               )}
               
               {isDrink && (
                 <>
                   <Grid item xs={12} sm={6}>
-                    <FormControl fullWidth required error={!!errors.drinkType}>
-                      <InputLabel>Tipo de Bebida</InputLabel>
+                    <FormControl fullWidth required error={!!errors.volume}>
+                      <InputLabel>Volume</InputLabel>
                       <Select
-                        name="drinkType"
-                        value={formData.drinkType}
+                        name="volume"
+                        value={formData.volume}
                         onChange={handleChange}
-                        label="Tipo de Bebida"
+                        label="Volume"
                       >
-                        {drinkTypes.map((type) => (
-                          <MenuItem key={type} value={type}>
-                            {type}
+                        {drinkVolumes.map((option) => (
+                          <MenuItem key={option.value} value={option.value}>
+                            {option.label}
                           </MenuItem>
                         ))}
                       </Select>
-                      {errors.drinkType && <Typography color="error" variant="caption">{errors.drinkType}</Typography>}
-                    </FormControl>
-                  </Grid>
-                  
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      fullWidth
-                      label="Volume"
-                      name="volume"
-                      value={formData.volume}
-                      onChange={handleChange}
-                      variant="outlined"
-                      required
-                      error={!!errors.volume}
-                      helperText={errors.volume || "Ex: 500ml, 1L, 2L"}
-                      placeholder="350ml"
-                    />
-                  </Grid>
-                  
-                  <Grid item xs={12} sm={6}>
-                    <FormControl component="fieldset">
-                      <FormLabel component="legend">Contém Álcool?</FormLabel>
-                      <RadioGroup
-                        row
-                        name="alcoholic"
-                        value={formData.alcoholic}
-                        onChange={handleChange}
-                      >
-                        <FormControlLabel value="yes" control={<Radio />} label="Sim" />
-                        <FormControlLabel value="no" control={<Radio />} label="Não" />
-                      </RadioGroup>
+                      {errors.volume && <Typography color="error" variant="caption">{errors.volume}</Typography>}
                     </FormControl>
                   </Grid>
                 </>
