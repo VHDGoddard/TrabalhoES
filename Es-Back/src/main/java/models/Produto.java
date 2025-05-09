@@ -15,12 +15,13 @@ public class Produto {
 
 	}
 
-	public Produto(Integer id, Double preco, String nome, String observacao, Tipo tipo) {
+	public Produto(Integer id, Double preco, String nome, String observacao, Tipo tipo, String url) {
 		this.id = id;
 		this.preco = preco;
 		this.nome = nome;
 		this.observacao = observacao;
 		this.tipo = tipo;
+		this.Url = url;
 	}
 
 	public String getUrl() {

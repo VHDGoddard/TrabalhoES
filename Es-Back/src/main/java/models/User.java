@@ -14,19 +14,23 @@ public class User {
 	private String password;
 	private String phone_number;
 	private String cpf;
+	private String nome;
 	private int endereco;
+
+
 
 	public User() {
 
 	}
 
-	public User(Integer id, String email, String password, String phone_number, String cpf) {
+	public User(Integer id, String email, String password, String phone_number, String cpf, String nome) {
 		super();
 		this.id = id;
 		this.email = email;
 		this.password = password;
 		this.phone_number = phone_number;
 		this.cpf = cpf;
+		this.nome = nome;
 	}
 
 	public Integer getId() {
@@ -37,12 +41,12 @@ public class User {
 		this.id = id;
 	}
 
-	public String getEmail() {
-		return email;
-	}
-
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getEmail() {
+		return email;
 	}
 
 	public String getPassword() {
@@ -137,6 +141,14 @@ public class User {
 
 	public String getAddress() {
 		return null;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
 	}
 
 }

@@ -12,12 +12,13 @@ public class Endereco {
 	public Endereco() {
 	}
 
-	public Endereco(Integer id, String rua, String bairro, Integer numero, String complemento) {
+	public Endereco(Integer id, String rua, String bairro, Integer numero, String complemento, String cep) {
 		this.id = id;
 		this.rua = rua;
 		this.bairro = bairro;
 		this.numero = numero;
 		this.complemento = complemento;
+		this.cep = cep;
 	}
 
 	public String getCep() {

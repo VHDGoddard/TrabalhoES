@@ -13,7 +13,7 @@ import models.User;
 
 public class UsersDAO {
     public boolean create(User user) {
-        String sql = "INSERT INTO users (email, password, phone_number, cpf) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO users (email, password, phone_number, cpf, nome) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.connect();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -22,6 +22,7 @@ public class UsersDAO {
             stmt.setString(2, user.getPassword());
             stmt.setString(3, user.getPhone_number());
             stmt.setString(4, user.getCpf());
+            stmt.setString(5, user.getNome());
             stmt.executeUpdate();
             return true;
         } catch (SQLException e) {
@@ -43,7 +44,9 @@ public class UsersDAO {
                         rs.getString("email"),
                         rs.getString("password"),
                         rs.getString("phone_number"),
-                        rs.getString("cpf"));
+                        rs.getString("cpf"),
+                        rs.getString("nome")
+                        );
             }
 
         } catch (SQLException e) {
@@ -63,7 +66,9 @@ public class UsersDAO {
                         rs.getString("email"),
                         rs.getString("password"),
                         rs.getString("phone_number"),
-                        rs.getString("cpf"));
+                        rs.getString("cpf"),
+                        rs.getString("nome")
+                        );
                 users.add(user);
             }
 
@@ -74,14 +79,15 @@ public class UsersDAO {
     }
 
     public boolean update(User user) {
-        String sql = "UPDATE users SET email = ?, password = ?, phone_number = ?, cpf = ? WHERE id = ?";
+        String sql = "UPDATE users SET email = ?, password = ?, phone_number = ?, cpf = ? , nome = ? WHERE id = ?";
         try (Connection conn = DatabaseConnection.connect();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, user.getEmail());
             stmt.setString(2, user.getPassword());
             stmt.setString(3, user.getPhone_number());
             stmt.setString(4, user.getCpf());
-            stmt.setInt(5, user.getId());
+            stmt.setString(5, user.getNome());
+            stmt.setInt(6, user.getId());
             stmt.executeUpdate();
             return true;
         } catch (SQLException e) {

@@ -38,7 +38,8 @@ public class EnderecoDAO {
                     rs.getString("rua"),
                     rs.getString("bairro"),
                     rs.getInt("numero"),
-                    rs.getString("complemento")
+                    rs.getString("complemento"),
+                    rs.getString("cep")
                 );
             }
         } catch (SQLException e) {
@@ -59,7 +60,8 @@ public class EnderecoDAO {
                     rs.getString("rua"),
                     rs.getString("bairro"),
                     rs.getInt("numero"),
-                    rs.getString("complemento")
+                    rs.getString("complemento"),
+                    rs.getString("cep")
                 );
                 enderecos.add(endereco);
             }

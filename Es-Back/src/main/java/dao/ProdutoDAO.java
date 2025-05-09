@@ -45,7 +45,8 @@ public class ProdutoDAO {
                         rs.getDouble("preco"),
                         rs.getString("nome"),
                         rs.getString("observacao"),
-                        Tipo.valueOf(rs.getString("tipo").toUpperCase()));
+                        Tipo.valueOf(rs.getString("tipo").toUpperCase()),
+                        rs.getString("url"));
             }
 
         } catch (SQLException e) {
@@ -65,8 +66,8 @@ public class ProdutoDAO {
                         rs.getDouble("preco"),
                         rs.getString("nome"),
                         rs.getString("observacao"),
-                        Tipo.valueOf(rs.getString("tipo").toUpperCase()));
-                System.out.println(produto.getTipo());
+                        Tipo.valueOf(rs.getString("tipo").toUpperCase()),
+                         rs.getString("url"));
                 produtos.add(produto);
             }
 

@@ -20,7 +20,7 @@ public class CreateDatabase {
             "rua VARCHAR(40)," +
             "bairro VARCHAR(20)," +
             "numero INTEGER," +
-            "complemento VARCHAR(100)" + 
+            "complemento VARCHAR(100)," + 
             "cep VARCHAR(9) UNIQUE)";
     stmt.execute(sqlEndereco);
 
@@ -31,6 +31,7 @@ public class CreateDatabase {
             "phone_number VARCHAR(20)," +
             "cpf VARCHAR(15) UNIQUE," +
             "endereco_id INTEGER," +
+            "nome VARCHAR(60)," + 
             "FOREIGN KEY (endereco_id) REFERENCES Endereco(id) ON DELETE SET NULL)";
     stmt.execute(sqlUsers);
 
@@ -39,7 +40,7 @@ public class CreateDatabase {
             "preco DECIMAL(10, 2)," +
             "nome VARCHAR(100)," +
             "observacao VARCHAR(255)," +
-            "tipo VARCHAR(50)" + 
+            "tipo VARCHAR(50)," + 
             "url VARCHAR(200))";
     stmt.execute(sqlProduto);
 
@@ -100,10 +101,10 @@ public class CreateDatabase {
             stmt.executeUpdate("INSERT INTO Bebida (id_produto, tamanho) VALUES (2, 'M')");
 
             // Usuário
-            stmt.executeUpdate("INSERT INTO users (email, password, phone_number, cpf, endereco_id) VALUES " +
-                               "('joao@email.com', '123456', '11999999999', '123456789123', 1)");
-            stmt.executeUpdate("INSERT INTO users (email, password, phone_number, cpf, endereco_id) VALUES " +
-                               "('paulo@gmail.com', '123456', '11999999999', '25943588787', 1)");
+            stmt.executeUpdate("INSERT INTO users (email, password, phone_number, cpf, endereco_id, nome) VALUES " +
+                               "('joao@email.com', '123456', '11999999999', '123456789123', 1, joao)");
+            stmt.executeUpdate("INSERT INTO users (email, password, phone_number, cpf, endereco_id, nome) VALUES " +
+                               "('paulo@gmail.com', '123456', '11999999999', '25943588787', 1, paulo)");
 
             // Pagamento
             stmt.executeUpdate("INSERT INTO Pagamento (tipo_pagamento, horario, valor) VALUES " +
