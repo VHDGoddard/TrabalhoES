@@ -55,7 +55,6 @@ const OrderPage = () => {
       try {
         // Buscar todos os produtos
         const productsData = await productService.getAllProducts();
-        
         // Formatar produtos para exibição
         const formattedProducts = productService.formatProductsForDisplay(productsData);
         
@@ -175,7 +174,7 @@ const OrderPage = () => {
       setLoading(false);
     }
   };
-
+console.log(products)
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>

@@ -90,8 +90,8 @@ public class CreateDatabase {
 
             // Produto (1 pizza, 1 bebida)
             stmt.executeUpdate("INSERT INTO Produto (preco, nome, observacao, tipo, url) VALUES " +
-                               "(39.90, 'Pizza Margherita', 'Sem borda', 'PIZZA', 'https://a.espncdn.com/combiner/i?img=/i/headshots/nba/players/full/1966.png&w=350&h=254')," +
-                               "(8.50, 'Coca-Cola', 'Gelada', 'BEBIDA', 'https://i.ytimg.com/vi/y59-J0Q9v2o/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLAYMziFRmjOpm7cOQmt_3Wu6c2JpA')");
+                               "(39.90, 'Pizza Margherita', '', 'PIZZA', 'https://images.pexels.com/photos/13814644/pexels-photo-13814644.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')," +
+                               "(8.50, 'Coca-Cola', 'Gelada', 'BEBIDA', 'https://images.pexels.com/photos/3819969/pexels-photo-3819969.jpeg?auto=compress&cs=tinysrgb&w=600')");
 
             // Pizza e Bebida
             stmt.executeUpdate("INSERT INTO Pizza (id_produto, tamanho) VALUES (1, 'FAMILIA')");

@@ -186,7 +186,7 @@ const formatProductsForDisplay = (products) => {
     name: product.nome,
     description: product.observacao,
     price: product.preco,
-    image: product.url || getDefaultProductImage(product.tipo),
+    image: product.Url || getDefaultProductImage(product.tipo),
     type: product.tipo?.toLowerCase() || 'other'
   }));
 };

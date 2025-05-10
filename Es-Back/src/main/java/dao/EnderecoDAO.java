@@ -10,7 +10,7 @@ import models.Endereco;
 public class EnderecoDAO {
 
     public boolean create(Endereco endereco) {
-        String sql = "INSERT INTO Endereco (rua, bairro, numero, complemento, cep, user_id) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Endereco (rua, bairro, numero, complemento, cep, user_id) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.connect();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, endereco.getRua());
@@ -20,11 +20,11 @@ public class EnderecoDAO {
             stmt.setString(5, endereco.getCep());
             stmt.setInt(6, endereco.getUser());
             stmt.executeUpdate();
+            System.out.println("CHEGOOOOOOOOOOOOOOOU");
             try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
             if (generatedKeys.next()) {
                 endereco.setId(generatedKeys.getInt(1)); // Aqui você atribui o ID ao objeto
             } else {
-               System.out.println( "NUM DEU");
                 return false;
             }
         }
